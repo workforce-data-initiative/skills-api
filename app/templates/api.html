@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>REBUILDD</title>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <script type=text/javascript src="static/js/client.js"></script>
+    <script type=text/javascript src="http://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+    <link rel="stylesheet" href="static/css/style.css"> 
+    <script>
+    $(function() {
+        init();
+    });
+    </script>
+
+</head>
+
+<body>
+<div id="loading">LOADING</div>
+<div style="height:40px"> </div>
+<nav class="navbar navbar-default navbar-fixed-top">
+<script> 
+    $(function(){
+        $('nav').load("static/html/nav.html"); 
+    });
+</script>
+</nav>
+
+<div class="container">
+        <h2>
+<a id="user-content-overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
+
+<h2>
+<a id="user-content-api-index" class="anchor" href="#api-index" aria-hidden="true"><span class="octicon octicon-link"></span></a>API index</h2>
+
+<ul>
+<li><a href="#industries-in-census-tract">Industries in census tract</a></li>
+<li><a href="#industry-composition-clustering">Industry composition clustering</a></li>
+<li><a href="#industry-nowcasting">Industry nowcasting</a></li>
+<li><a href="#skills-for-occupations">Skills for occupations</a></li>
+<li><a href="#onet-occupation-autocomplete">Onet occupation autocomplete</a></li>
+</ul>
+
+<h2>
+<a id="user-content-api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
+
+<h3>
+<a id="user-content-industries-in-census-tract" class="anchor" href="#industries-in-census-tract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Industries in census tract (temporarily disabled)</h3>
+
+<p>Get time-series of employment counts for industries at the specified <code>tract_number</code>. Number of top returned industries is specified with <code>top_industries</code>.</p>
+
+<h4>
+<a id="user-content-call" class="anchor" href="#call" aria-hidden="true"><span class="octicon octicon-link"></span></a>Call</h4>
+
+<p><code>[GET] api/census_tract/&lt;tract_number&gt;/&lt;top_industries&gt;</code></p>
+
+<h4>
+<a id="user-content-example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h4>
+
+<p><a href="api/census_tract/17203030400/2">api/census_tract/17203030400/2</a></p>
+
+<h4>
+<a id="user-content-result" class="anchor" href="#result" aria-hidden="true"><span class="octicon octicon-link"></span></a>Result</h4>
+
+<pre><code>{
+  "loads": [
+     {
+       "series": [
+         { 
+           "data": [1013, 886, 871, 831, 821, 805, 905, 845, 781, 748],
+           "name": ["NAICS sector 31-33", "(Manufacturing)"]
+         },
+         { 
+           "data": [398, 407, 380, 433, 440, 417, 443, 477, 444, 474],
+           "name": "NAICS sector 61 (Educational Services)"
+         }
+       ],
+       "title": {"text": "Top 2 Current Industries by Employment"},
+       "subtitle": {"text": "Census Tract Fipscode: 17203030400"},
+       "xAxis": {"categories": [2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]},
+       "yAxis": {"title": {"text": "Number of Employment"}}
+     },
+     {
+       "series": [
+         { 
+           "data": [0, 1, 2, 0, 2, 1, 1, 0, 0, 55], 
+           "name": "NAICS sector 71 (Arts, Entertainment, and Recreation)"
+         },
+         { 
+           "data": [0, 0, 0, 0, 4, 0, 3, 11, 7, 5],
+           "name": ["NAICS sector 11", "(Agriculture, Forestry, Fishing and Hunting)"]
+         }
+       ],
+       "subtitle": {"text": "Census Tract Fipscode: 17203030400"},
+       "title": {"text": "Top 2 Fastest Growing Industries By Employment in last Decade"}
+     }
+  ]
+}
+</code></pre>
+
+<h3>
+<a id="user-content-industry-composition-clustering" class="anchor" href="#industry-composition-clustering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Industry composition clustering</h3>
+
+<h4>
+<a id="user-content-call-1" class="anchor" href="#call-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Call</h4>
+
+<p><code>[GET] api/industry_kmeans</code></p>
+
+<h4>
+<a id="user-content-example-1" class="anchor" href="#example-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h4>
+
+<p><a href="api/industry_kmeans/1">api/industry_kmeans/1</a></p>
+
+<h4>
+<a id="user-content-result-1" class="anchor" href="#result-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Result</h4>
+
+<pre><code>{
+ "17031802801": 3, "17031071600": 1, "17043845510": 1, 
+ "17197880307": 0, "17093890600": 3, "17031461000": 2, 
+ "17031843900": 3, "17097860809": 0, "17187870200": 1, 
+ "17135958000": 1, "17197880303": 3, "17031815300": 1,
+ "17031160200": 1, "17163501603": 3, "17163501602": 2,
+ "17163501605": 1, "17163501604": 2, "17201001400": 1,
+ "17031804609": 1, "17031804608": 3, "17031804607": 1,
+ "17031804606": 0, "17097860807": 1, "17031804603": 1,
+ "17057953600": 3, "17031380500": 0, "17165955500": 1,
+ "17031350400": 1, "17019010900": 1, "17197880308": 1,
+ "17197880420": 1, "17197880421": 1, "17043846104": 4,
+ "17031750300": 0, "17089854301": 3, "17089854302": 0
+}
+</code></pre>
+
+<h3>
+<a id="user-content-industry-nowcasting" class="anchor" href="#industry-nowcasting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Industry nowcasting</h3>
+
+<p></p>
+
+<h4>
+<a id="user-content-call-2" class="anchor" href="#call-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Call</h4>
+
+<p><code>[GET] api/industry_nowcasting_hc/&lt;tract_id&gt;/&lt;industry_code&gt;</code></p>
+
+<h4>
+<a id="user-content-example-2" class="anchor" href="#example-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h4>
+
+<p><a href="api/industry_nowcasting_hc/17001000100/CNS04">api/industry_nowcasting_hc/17001000100/CNS04</a></p>
+
+<h4>
+<a id="user-content-result-2" class="anchor" href="#result-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Result</h4>
+
+<pre><code>{
+  "series": 
+    [
+      {
+        "data": [69.225834046200006, 73.201881950392007, 88.112061591111996, 86.976047904200001, 71.000855431999994, 76.538922155696, 88.254063301976004, 82.857998289144007, 71.497861420023995, 72.988879384095995, 80.301967493592002, 80.301967493592002, 67.166809238672002, 67.947818648424004, 76.467921300263995, 78.810949529520002, 68.018819503855994, 70.290846877679996, 83.781009409760003],
+        "name": "Min employement"},
+      {
+        "data": [89.410480349384997, 94.545851528426596, 113.803493449833, 112.336244541535, 91.703056768600007, 98.855895196550804, 113.98689956337, 107.017467248956, 92.344978165980194, 94.270742358120799, 103.716157205287, 103.716157205287, 86.751091703095597, 87.759825327550203, 98.764192139782196, 101.790393013146, 87.851528384318797, 90.786026200913994, 108.209606986948], 
+        "name": "Predicted employement"}, 
+      {
+        "data": [99.222035324100005, 104.920941968356, 126.291841884316, 124.6635828431, 101.766190076, 109.70395290192801, 126.495374264468, 118.76114381869201, 102.478553406532, 104.615643398128, 115.097560975956, 115.097560975956, 96.270815811896, 97.390243902731996, 109.602186711852, 112.96047098436, 97.492010092808002, 100.74852817524, 120.08410428968],
+        "name": "Max employement"
+      }
+    ],
+    "title": {"text": "Industry employement nowcasting"}, 
+    "subtitle": {"text": "NAICS sector 23, (Construction)"}, 
+    "xAxis": {"categories": ["2010-01", "2010-04", "2010-07", "2010-10", "2011-01", "2011-04", "2011-07", "2011-10", "2012-01", "2012-04", "2012-07", "2012-10", "2013-01", "2013-04", "2013-07", "2013-10", "2014-01", "2014-04", "2014-07"]}, 
+    "yAxis": {"min": 0.1, "title": {"text": "employement"}}
+}
+</code></pre>
+
+<h3>
+<a id="user-content-skills-for-occupations" class="anchor" href="#skills-for-occupations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Skills for occupations</h3>
+
+<p>Get time-series of skill counts. Skills are extracted from job postings for specified <code>onet_occupation</code> using rebuildd skill extraction. Number of returned top skills is specified using <code>top_skills</code> argument.</p>
+
+<h4>
+<a id="user-content-call-3" class="anchor" href="#call-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Call</h4>
+
+<p><code>[GET] http://52.12.190.6/api/occupation_skills/&lt;onet_occupation_title&gt;/&lt;top_skills&gt;</code></p>
+
+<h4>
+<a id="user-content-example-3" class="anchor" href="#example-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h4>
+
+<p><a href="api/occupation_skills/Computer%20Programmers/2">api/occupation_skills/Computer%20Programmers/2</a></p>
+
+<h4>
+<a id="user-content-result-3" class="anchor" href="#result-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Result</h4>
+
+<div class="highlight highlight-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>series<span class="pl-pds">"</span></span>: [
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [<span class="pl-c1">2</span>, <span class="pl-c1">1.8181818181818181</span>, <span class="pl-c1">1.6694214876033058</span>, <span class="pl-c1">1.3658903080390683</span>, <span class="pl-c1">1.2993647974865103</span>, <span class="pl-c1">1.2449348343071449</span>, <span class="pl-c1">1.7458557735240277</span>, <span class="pl-c1">1.4284274510651136</span>, <span class="pl-c1">1.1687133690532747</span>, <span class="pl-c1">1.1380382110435885</span>, <span class="pl-c1">1.1129403544902088</span>, <span class="pl-c1">1.0924057445828981</span>, <span class="pl-c1">1.0756047001132802</span>, <span class="pl-c1">1.0618583910017747</span>, <span class="pl-c1">0.86879322900145206</span>, <span class="pl-c1">1.0744671873648244</span>, <span class="pl-c1">1.6063822442075835</span>, <span class="pl-c1">2.0415854725334772</span>, <span class="pl-c1">1.8522062957092087</span>, <span class="pl-c1">1.6972596964893525</span>, <span class="pl-c1">1.570485206218561</span>, <span class="pl-c1">1.4667606232697317</span>, <span class="pl-c1">1.5637132372206894</span>, <span class="pl-c1">1.4612199213623822</span>, <span class="pl-c1">1.3773617538419491</span>, <span class="pl-c1">1.3087505258706857</span>, <span class="pl-c1">1.2526140666214702</span>, <span class="pl-c1">1.2066842363266574</span>],
+      <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>development<span class="pl-pds">"</span></span>
+    },
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [<span class="pl-c1">1</span>, <span class="pl-c1">1.0</span>, <span class="pl-c1">1.0</span>, <span class="pl-c1">0.81818181818181812</span>, <span class="pl-c1">0.66942148760330578</span>, <span class="pl-c1">0.72952667167543206</span>, <span class="pl-c1">0.59688545864353526</span>, <span class="pl-c1">0.67017901161743798</span>, <span class="pl-c1">0.54832828223244923</span>, <span class="pl-c1">0.63045041273564029</span>, <span class="pl-c1">0.69764124678370565</span>, <span class="pl-c1">0.75261556555030462</span>, <span class="pl-c1">0.97941273545024921</span>, <span class="pl-c1">0.98315587445929475</span>, <span class="pl-c1">0.98621844273942294</span>, <span class="pl-c1">1.170542362241346</span>, <span class="pl-c1">1.3213528418338285</span>, <span class="pl-c1">1.4447432342276778</span>, <span class="pl-c1">1.3638808280044636</span>, <span class="pl-c1">1.2977206774581975</span>, <span class="pl-c1">1.0617714633748889</span>, <span class="pl-c1">1.0505402882158181</span>, <span class="pl-c1">1.0413511449038513</span>, <span class="pl-c1">0.85201457310315099</span>, <span class="pl-c1">0.69710283253894167</span>, <span class="pl-c1">0.75217504480458863</span>, <span class="pl-c1">0.79723412756739065</span>, <span class="pl-c1">0.83410064982786503</span>],
+      <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>software<span class="pl-pds">"</span></span>
+     }
+  ],
+  <span class="pl-s"><span class="pl-pds">"</span>yAxis<span class="pl-pds">"</span></span>: {<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>: {<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Demand<span class="pl-pds">"</span></span>}}, <span class="pl-s"><span class="pl-pds">"</span>subtitle<span class="pl-pds">"</span></span>: {<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Computer Programmers<span class="pl-pds">"</span></span>},   
+  <span class="pl-s"><span class="pl-pds">"</span>xAxis<span class="pl-pds">"</span></span>: {<span class="pl-s"><span class="pl-pds">"</span>categories<span class="pl-pds">"</span></span>: [<span class="pl-s"><span class="pl-pds">"</span>2011-06<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2011-07<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2011-08<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2011-09<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2011-10<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2011-11<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2011-12<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-01<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-02<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-03<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-04<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-05<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-06<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-07<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-08<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-09<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-10<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-11<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2012-12<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-01<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-02<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-03<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-04<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-05<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-06<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-07<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-08<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-09<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-10<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-11<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2013-12<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2014-01<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2014-02<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2014-03<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2014-04<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2014-05<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2014-06<span class="pl-pds">"</span></span>]},
+  <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>: {<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Skill for Occupation<span class="pl-pds">"</span></span>}
+}</pre></div>
+
+<h3>
+<a id="user-content-onet-occupation-autocomplete" class="anchor" href="#onet-occupation-autocomplete" aria-hidden="true"><span class="octicon octicon-link"></span></a>Onet occupation autocomplete</h3>
+
+<h4>
+<a id="user-content-call-4" class="anchor" href="#call-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Call</h4>
+
+<p><code>[GET] http://52.12.190.6/api/auto_occupation/&lt;occupation_prefix&gt;</code></p>
+
+<h4>
+<a id="user-content-example-4" class="anchor" href="#example-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h4>
+
+<p><a href="api/auto_occupation/com">api/auto_occupation/com</a></p>
+
+<h4>
+<a id="user-content-result-4" class="anchor" href="#result-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Result</h4>
+
+<pre><code>[
+ "Commercial and Industrial Designers", "Computer Operators", 
+ "Community and Social Service Specialists, All Other", 
+ "Computer Programmers", "Computer Science Teachers, Postsecondary",
+ "Commercial Pilots", "Compensation and Benefits Managers",
+ "Computer Software Engineers, Applications",
+ "Compliance Officers, Except Agriculture, Construction, Health and Safety, and Transportation",
+ "Computer Security Specialists", "Computer Support Specialists",
+ "Computer Hardware Engineers", "Compensation, Benefits, and Job Analysis Specialists", 
+ "Compliance Managers", "Computer, Automated Teller, and Office Machine Repairers", 
+ "Computer Software Engineers, Systems Software", "Command and Control Center Specialists", 
+ "Computer Systems Engineers/Architects", 
+ "Combined Food Preparation and Serving Workers, Including Fast Food",
+ "Computer and Information Systems Managers", 
+ "Computer-Controlled Machine Tool Operators, Metal and Plastic", 
+ "Computer Systems Analysts", "Computer and Information Scientists, Research"
+]
+</code></pre>
+
+        <footer class="footer">
+            <p>&copy; DSSG 2015</p>
+        </footer>
+</body>
+</html>

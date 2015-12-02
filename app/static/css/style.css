@@ -1,0 +1,53 @@
+#loading{
+    /*background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
+    */
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    display: none;
+    background-image:url("../img/loading.gif");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+.hc {
+    margin: 0;
+    padding: 0;
+    height: 420px
+}
+
+.jhc {
+    background-color: white; !important
+    padding-left: 0; !important
+    padding-right: 0; !important
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.matcher {
+    width:100px;
+    height:100px; 
+}
+
+#census_tract_current_hc {
+    display:hidden;
+}
+
+#census_tract_current_hc {
+    display: hidden;
+}
+
+#legend {
+    width: 200px;
+    height: 60px;
+    position: relative;
+    top:20px;
+    left:560px;
+    z-index:100;
+    /*background-img:url()
+    */
+}
