@@ -5,7 +5,7 @@ setup(
       version='0.1',
       description='Real-time Business Indicators and Labor Dynamics Database',
       url='https://github.com/dssg',
-      author='Labor team',
+      author='Labor DSSG15 team',
       author_email='',
       license='',
       packages=['rebuildd'],
