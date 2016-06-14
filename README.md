@@ -5,6 +5,11 @@ knowledge, abilities, tools, technolgies, and how they relate to jobs.
 ## Overview
 TODO - Write a sweet, sweet overview of the API
 
+## Demo
+The following endpoints were automatically deployed via the Zappa framework to Amazon Web Services.
+- [https://vhbg2y4qug.execute-api.us-east-1.amazonaws.com/dev/jobs](https://vhbg2y4qug.execute-api.us-east-1.amazonaws.com/dev/jobs)
+- [https://vhbg2y4qug.execute-api.us-east-1.amazonaws.com/dev/skills](https://vhbg2y4qug.execute-api.us-east-1.amazonaws.com/dev/skills)
+
 ## Dependencies
 - Python 2.7.11
 
