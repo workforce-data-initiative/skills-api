@@ -1,0 +1,6 @@
+{
+    "dev": {
+        "s3_bucket": "trak-lambda",
+        "app_function": "app.app"
+    }
+}
