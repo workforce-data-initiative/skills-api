@@ -17,7 +17,7 @@ from api.resources.jobs import Job
 from db.models.skills_master import SkillsMaster
 from db.models.related_skills import RelatedSkills
 
-from api_config.config import AppConfig
+from api_config.config import Config
 
 app = Flask(__name__)
 
