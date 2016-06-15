@@ -17,10 +17,12 @@ from api.resources.jobs import Job
 from db.models.skills_master import SkillsMaster
 from db.models.related_skills import RelatedSkills
 
+from api_config.config import AppConfig
+
 app = Flask(__name__)
 
-# TODO - Move this to a configuration object
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Configure application
+app.config.from_object('api_config.config.Config')
 
 # Decorate the Flask application with all the necessary extensions
 api = Api(app)
