@@ -61,3 +61,4 @@ target/
 # Other development crud
 .python-version
 venv/
+config/
