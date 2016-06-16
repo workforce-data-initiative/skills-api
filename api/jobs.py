@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-api.resources.jobs
-~~~~~~~~~~~~~~~~~~
+api.jobs
+~~~~~~~~~
 Definitions of all methods associated with jobs endpoints.
 """
 
@@ -11,8 +11,6 @@ from flask_restful import Resource
 from app.app import db
 from db.models.skills_master import SkillsMaster
 from db.models.related_skills import RelatedSkills
-
-import json
 
 class Job(Resource):
     def get(self, id):
