@@ -29,10 +29,8 @@ def seed():
     lines = lines[1:]
     
     for line in lines:
-        print line
         line = line.strip().split(',')[1:]
-        skills_master = SkillsMaster(line[0], line[1], line[2], line[3], line[4])
-
+        skills_master = SkillsMaster(line[0], line[1], line[2], str(line[3]), line[4])
         print 'Adding item ' + line[0]
         
         db.session.add(skills_master)

@@ -20,5 +20,5 @@ from db.models.related_skills import RelatedSkills
 from api.jobs import Job
 from api.skills import Skill
 
-api.add_resource(Job, '/jobs')
-api.add_resource(Skill, '/skills')
+api.add_resource(Job, '/jobs/<int:id>')
+api.add_resource(Skill, '/skills/<int:id>')
