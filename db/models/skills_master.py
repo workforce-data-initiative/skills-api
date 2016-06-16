@@ -1,8 +1,4 @@
-
 # -*- coding: utf-8 -*-
-
-from flask_sqlalchemy import Model
-from sqlalchemy import Column, Integer, String
 
 """
 db.models.skills_master
@@ -10,8 +6,12 @@ db.models.skills_master
 An ORM class representing the Skills_Master database table.
 """
 
-class SkillsMaster(Model):
-    skill_uuid = Column(Integer, primary_key=True)
-    onet_element_id = Column(String)
-    skill_name = Column(String)
-    count = Column(Integer)
+from app.app import db
+
+class SkillsMaster(db.Model):
+    __tablename__ = 'skills_master'
+    
+    skill_uuid = db.Column(db.Integer, primary_key=True)
+    onet_element_id = db.Column(db.String)
+    skill_name = db.Column(db.String)
+    count = db.Column(db.Integer)
