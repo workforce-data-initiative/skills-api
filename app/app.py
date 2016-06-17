@@ -16,9 +16,10 @@ migrate = Migrate(app, db)
 
 from db.models.skills_master import SkillsMaster
 from db.models.related_skills import RelatedSkills
+from db.models.job_skills import JobSkills
 
-from api.jobs import Job
+from api.jobs import JobSkill
 from api.skills import Skill
 
-api.add_resource(Job, '/jobs/<int:id>')
+api.add_resource(JobSkill, '/jobs/<string:id>/skills')
 api.add_resource(Skill, '/skills/<int:id>')

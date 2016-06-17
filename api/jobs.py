@@ -9,16 +9,15 @@ Definitions of all methods associated with jobs endpoints.
 from flask import abort
 from flask_restful import Resource
 from app.app import db
-from db.models.skills_master import SkillsMaster
-from db.models.related_skills import RelatedSkills
+#from db.models.skills_master import SkillsMaster
+#from db.models.related_skills import RelatedSkills
+from db.models.job_skills import JobSkills
 
-class Job(Resource):
+class JobSkill(Resource):
     def get(self, id):
         output = {}
-        result = SkillsMaster.query.filter_by(skill_uuid = id).first()
+        result = JobSkills.query.filter_by(onet_soc_code = id).first()
         if result:
-            output['skill_name'] = result.skill_name
-            output['count'] = result.count
-            return output
+            return result.related_skills
         else:
             abort(404)
