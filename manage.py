@@ -44,18 +44,22 @@ def seed_skills_master():
             skill_name = str(line[4])
             skill_count = int(line[5])
 
-            skills_master = SkillsMaster(skill_uuid, onet_soc_code, \
-                    onet_element_id, skill_name, skill_count)
+            if (SkillsMaster.query.filter_by(skill_name = skill_name).count() == 0):
+                skills_master = SkillsMaster(skill_uuid, onet_soc_code, \
+                        onet_element_id, skill_name, skill_count)
 
-            print 'Adding skill ' + skill_name
+                print 'Adding skill ' + skill_name
         
-            try:
-                db.session.add(skills_master)
-                db.session.commit()
-                count += 1
+                try:
+                    db.session.add(skills_master)
+                    db.session.commit()
+                    count += 1
+                    visited_skills.append(skill_name)
+                except:
+                    print '\t-----> Could not add skill ' + skills_master.skill_name
+            else:
+                print 'Skipping ' + skill_name
                 visited_skills.append(skill_name)
-            except:
-                print '\t-----> Could not add skill ' + skills_master.skill_name
 
 @manager.command
 def seed_job_to_skills():
