@@ -25,7 +25,7 @@ manager.add_command('db', MigrateCommand)
 @manager.command
 def seed_skills_master():
     "Populate the skills_master database tables."
-    with open(os.path.join('common', 'skills_master.csv'), 'r') as f:
+    with open(os.path.join('common', 'skills_master.tsv'), 'r') as f:
         lines = f.readlines()
 
     # dump the header
@@ -36,7 +36,7 @@ def seed_skills_master():
     count = 0
 
     for line in lines:
-        line = line.strip().split(',')
+        line = line.strip().split('\t')
         if str(line[4]) not in visited_skills:
             skill_uuid = str(uuid.uuid4())
             onet_soc_code = str(line[2])
