@@ -11,7 +11,7 @@ from app.app import db
 class SkillsMaster(db.Model):
     __tablename__ = 'skills_master'
     
-    skill_uuid = db.Column(db.Integer, primary_key=True)
+    skill_uuid = db.Column(db.String, primary_key=True)
     onet_soc_code = db.Column(db.String)
     onet_element_id = db.Column(db.String)
     skill_name = db.Column(db.String)

@@ -14,6 +14,8 @@ from flask_migrate import MigrateCommand
 
 manager = Manager(app)
 
+import uuid
+
 from db.models.skills_master import SkillsMaster
 from db.models.job_skills import JobSkills
 
@@ -28,17 +30,32 @@ def seed_skills_master():
 
     # dump the header
     lines = lines[1:]
-    
+
+    # collect unique skills from list of skills
+    visited_skills = []
+    count = 0
+
     for line in lines:
-        line = line.strip().split(',')[1:]
-        skills_master = SkillsMaster(line[0], line[1], line[2], str(line[3]), line[4])
-        print 'Adding item ' + line[0]
+        line = line.strip().split(',')
+        if str(line[4]) not in visited_skills:
+            skill_uuid = str(uuid.uuid4())
+            onet_soc_code = str(line[2])
+            onet_element_id = str(line[3])
+            skill_name = str(line[4])
+            skill_count = int(line[5])
+
+            skills_master = SkillsMaster(skill_uuid, onet_soc_code, \
+                    onet_element_id, skill_name, skill_count)
+
+            print 'Adding skill ' + skill_name
         
-        try:
-            db.session.add(skills_master)
-            db.session.commit()
-        except:
-            print 'Could not add item ' + line[0]
+            try:
+                db.session.add(skills_master)
+                db.session.commit()
+                count += 1
+                visited_skills.append(skill_name)
+            except:
+                print '\t-----> Could not add skill ' + skills_master.skill_name
 
 @manager.command
 def seed_job_to_skills():

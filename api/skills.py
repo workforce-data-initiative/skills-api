@@ -12,13 +12,43 @@ from app.app import db
 from db.models.skills_master import SkillsMaster
 from db.models.related_skills import RelatedSkills
 
-class Skill(Resource):
+import json
+
+class ONETSkill(Resource):
     def get(self, id):
-        output = {}
-        result = SkillsMaster.query.filter_by(skill_uuid = id).first()
-        if result:
-            output['skill_name'] = result.skill_name
-            output['count'] = result.count
-            return output
+        if id is not None:
+            output = {}
+            result = SkillsMaster.query.filter_by(onet_soc_code = id).first()
+            if result is not None:
+                output['skill_uuid'] = result.skill_uuid
+                output['onet_soc_code'] = result.onet_soc_code
+                return output
         else:
             abort(404)
+
+class Skill(Resource):
+    def get(self, id=None):
+        if id is not None:
+            output = {}
+            result = SkillsMaster.query.filter_by(skill_uuid = id).first()
+            if result is not None:
+                output['skill_uuid'] = result.skill_uuid
+                output['skill_name'] = result.skill_name
+                output['count'] = result.count
+                return output
+            else:
+                abort(404)
+        else:
+            output_array = []
+            result = SkillsMaster.query.order_by(SkillsMaster.count.desc()).all()
+            if result is not None:
+                for res in result:
+                    output = {}
+                    output['skill_uuid'] = res.skill_uuid
+                    output['skill_name'] = res.skill_name
+                    output['count'] = res.count
+                    output_array.append(output)
+                return output_array
+            else:
+                abort(404)
+

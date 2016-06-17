@@ -20,6 +20,8 @@ from db.models.job_skills import JobSkills
 
 from api.jobs import JobSkill
 from api.skills import Skill
+from api.skills import ONETSkill
 
 api.add_resource(JobSkill, '/jobs/<string:id>/skills')
-api.add_resource(Skill, '/skills/<int:id>')
+api.add_resource(Skill, '/skills/<string:id>', '/skills')
+api.add_resource(ONETSkill, '/skills/<string:id>/uuid')
