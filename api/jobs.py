@@ -35,15 +35,23 @@ class JobEndpoint(Resource):
                 alt_titles = AlternateJobTitle.query.filter_by(job_uuid = result.uuid).all()
                 for alt_title in alt_titles:
                     title = OrderedDict()
-                    title['title'] = alt_title.title
                     title['uuid'] = alt_title.uuid
+                    title['title'] = alt_title.title
                     output['related_job_titles'].append(title)
                 return output
                 
         else:
-            result = Job.query.all()
-            if result is not None:
-                return 'jobs'
+            results = Job.query.all()
+            if results is not None:
+                all_jobs = []
+                for result in results:
+                    output = OrderedDict()
+                    output['uuid'] = result.uuid
+                    output['onet_soc_code'] = result.onet_soc_code
+                    output['title'] = result.title
+                    output['description'] = result.description
+                    all_jobs.append(output)
+                return all_jobs
             else:
                 abort(404)
 
