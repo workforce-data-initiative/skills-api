@@ -6,14 +6,50 @@ api.skills
 Definitions of all methods associated with skills endpoints.
 """
 
-from flask import abort
+from flask import abort, request
 from flask_restful import Resource
 from collections import OrderedDict
 from app.app import db
 from db.models.skills_master import SkillMaster
 from db.models.related_skills import RelatedSkill
 
-import json
+class SkillAutocompleteEndpoint(Resource):
+    def get(self):
+        args = request.args
+        query_mode = ''
+        if args is not None:
+            if 'begins_with' in args.keys():
+                search_string = str(args['begins_with'])
+                query_mode = 'begins_with'
+            elif 'contains' in args.keys():
+                search_string = str(args['contains'])
+                query_mode = 'contains'
+            elif 'ends_with' in args.keys():
+                search_string = str(args['ends_with'])
+                query_mode = 'ends_with'
+            else:
+                abort(400)
+
+            search_string = search_string.replace('"','').strip()
+            all_suggestions = []
+           
+            if query_mode == 'begins_with':
+                results = SkillMaster.query.filter(SkillMaster.skill_name.startswith(search_string)).all()
+
+            if query_mode == 'contains':
+                results = SkillMaster.query.filter(SkillMaster.skill_name.contains(search_string)).all()
+
+            if query_mode == 'ends_with':
+                results = SkillMaster.query.filter(SkillMaster.skill_name.endswith(search_string)).all()
+
+            for result in results:
+                suggestion = {}
+                suggestion['suggestion'] = result.skill_name
+                all_suggestions.append(suggestion)
+
+            return all_suggestions
+        else:
+            abort(400)
 
 class ONETSkillEndpoint(Resource):
     def get(self, id):

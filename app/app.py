@@ -23,10 +23,13 @@ from db.models.jobs import AlternateJobTitle
 from api.jobs import JobSkillEndpoint
 from api.skills import SkillEndpoint
 from api.skills import ONETSkillEndpoint
+from api.skills import SkillAutocompleteEndpoint
 from api.jobs import JobEndpoint
 
 api.add_resource(JobSkillEndpoint, '/jobs/<string:id>/skills')
 api.add_resource(SkillEndpoint, '/skills/<string:id>', '/skills')
-api.add_resource(ONETSkillEndpoint, '/skills/<string:id>/uuid')
+api.add_resource(ONETSkillEndpoint, '/skills/<string:id>/uuids')
 api.add_resource(JobEndpoint, '/jobs/<string:id>', endpoint='job_ep')
 api.add_resource(JobEndpoint, '/jobs/', endpoint='all_jobs_ep')
+api.add_resource(SkillAutocompleteEndpoint, '/skills/autocomplete', \
+        endpoint='skills_autocomplete')

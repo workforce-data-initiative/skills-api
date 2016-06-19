@@ -6,7 +6,7 @@ api.jobs
 Definitions of all methods associated with jobs endpoints.
 """
 
-from flask import abort
+from flask import abort, request
 from flask_restful import Resource
 from collections import OrderedDict
 from app.app import db
