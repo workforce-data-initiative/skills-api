@@ -17,14 +17,14 @@ class Job(db.Model):
     description = db.Column(db.String)
     alternate_titles = db.relationship('AlternateJobTitle', backref='job', lazy='dynamic')
     
-    def __init__(self, job_uuid, onet_soc_code, title, description):
-        self.job_uuid = job_uuid
+    def __init__(self, uuid, onet_soc_code, title, description):
+        self.uuid = uuid
         self.onet_soc_code = onet_soc_code
         self.title = title
         self.description = description
         
     def __repr__(self):
-        return '<uuid {}>'.format(self.job_uuid)
+        return '<uuid {}>'.format(self.uuid)
 
 class AlternateJobTitle(db.Model):
     __tablename__ = 'alternate_job_titles'

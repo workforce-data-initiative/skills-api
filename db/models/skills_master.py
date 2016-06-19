@@ -17,7 +17,7 @@ class SkillMaster(db.Model):
     skill_name = db.Column(db.String)
     count = db.Column(db.Integer)
 
-    def __init__(self, skill_uuid, onet_soc_code, onet_element_id, skill_name, count):
+    def __init__(self, uuid, onet_soc_code, onet_element_id, skill_name, count):
         self.uuid = uuid
         self.onet_soc_code = onet_soc_code
         self.onet_element_id = onet_element_id
