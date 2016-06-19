@@ -14,9 +14,11 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-from db.models.skills_master import SkillsMaster
-from db.models.related_skills import RelatedSkills
-from db.models.job_skills import JobSkills
+from db.models.skills_master import SkillMaster
+from db.models.related_skills import RelatedSkill
+from db.models.job_skills import JobSkill
+from db.models.jobs import Job
+from db.models.jobs import AlternateJobTitle
 
 from api.jobs import JobSkill
 from api.skills import Skill

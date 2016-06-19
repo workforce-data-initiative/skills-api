@@ -9,8 +9,8 @@ Definitions of all methods associated with skills endpoints.
 from flask import abort
 from flask_restful import Resource
 from app.app import db
-from db.models.skills_master import SkillsMaster
-from db.models.related_skills import RelatedSkills
+from db.models.skills_master import SkillMaster
+from db.models.related_skills import RelatedSkill
 
 import json
 
@@ -18,7 +18,7 @@ class ONETSkill(Resource):
     def get(self, id):
         if id is not None:
             output_array = []
-            result = SkillsMaster.query.filter_by(onet_soc_code = id).all()
+            result = SkillMaster.query.filter_by(onet_soc_code = id).all()
             if result is not None:
                 for res in result:
                     output = {}
@@ -35,7 +35,7 @@ class Skill(Resource):
     def get(self, id=None):
         if id is not None:
             output = {}
-            result = SkillsMaster.query.filter_by(skill_uuid = id).first()
+            result = SkillMaster.query.filter_by(skill_uuid = id).first()
             if result is not None:
                 output['skill_uuid'] = result.skill_uuid
                 output['skill_name'] = result.skill_name
@@ -45,7 +45,7 @@ class Skill(Resource):
                 abort(404)
         else:
             output_array = []
-            result = SkillsMaster.query.order_by(SkillsMaster.count.desc()).all()
+            result = SkillMaster.query.order_by(SkillMaster.count.desc()).all()
             if result is not None:
                 for res in result:
                     output = {}

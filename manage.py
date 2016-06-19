@@ -16,8 +16,8 @@ manager = Manager(app)
 
 import uuid
 
-from db.models.skills_master import SkillsMaster
-from db.models.job_skills import JobSkills
+from db.models.skills_master import SkillMaster
+from db.models.job_skills import JobSkill
 
 # Add the SQLAlchemy database utilities to the manager utility
 manager.add_command('db', MigrateCommand)

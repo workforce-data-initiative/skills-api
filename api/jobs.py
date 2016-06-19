@@ -11,12 +11,12 @@ from flask_restful import Resource
 from app.app import db
 #from db.models.skills_master import SkillsMaster
 #from db.models.related_skills import RelatedSkills
-from db.models.job_skills import JobSkills
+from db.models.job_skills import JobSkill
 
 class JobSkill(Resource):
     def get(self, id):
         output = {}
-        result = JobSkills.query.filter_by(onet_soc_code = id).first()
+        result = JobSkill.query.filter_by(onet_soc_code = id).first()
         if result:
             return result.related_skills
         else:
