@@ -79,9 +79,9 @@ class JobEndpoint(Resource):
                 return output
                 
         else:
-            results = Job.query.all()
+            all_jobs = []
+            results = Job.query.order_by(Job.title.desc()).all()
             if results is not None:
-                all_jobs = []
                 for result in results:
                     output = OrderedDict()
                     output['uuid'] = result.uuid
@@ -89,10 +89,8 @@ class JobEndpoint(Resource):
                     output['title'] = result.title
                     output['description'] = result.description
                     all_jobs.append(output)
-                return all_jobs
-            else:
-                abort(404)
 
+            return all_jobs
 
 class JobSkillEndpoint(Resource):
     def get(self, id):
