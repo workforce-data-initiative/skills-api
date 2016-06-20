@@ -74,8 +74,8 @@ def seed_jobs_master():
         occupation = occupation.strip().split('\t')
         if occupation[3] == 'n/a':
             onet_soc_code = occupation[0]
-            title = occupation[1]
-            description = occupation[2]
+            title = occupation[1].lower()
+            description = occupation[2].lower()
             job_uuid = str(hashlib.md5(title).hexdigest())
             job = Job(job_uuid, onet_soc_code, title, description)
            
@@ -97,7 +97,7 @@ def seed_job_titles():
         occupation = occupation.strip().split('\t')
         if occupation[1] == 'n/a' and occupation[2] == 'n/a':
             onet_soc_code = occupation[0]
-            title = occupation[3]
+            title = occupation[3].lower()
             job_title_uuid = str(hashlib.md5(title).hexdigest())
 
             if job_title_uuid not in created_uuids:
