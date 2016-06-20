@@ -25,6 +25,7 @@ from api.skills import SkillEndpoint
 from api.skills import ONETSkillEndpoint
 from api.skills import SkillAutocompleteEndpoint
 from api.jobs import JobEndpoint
+from api.jobs import JobAutocompleteEndpoint
 
 api.add_resource(JobSkillEndpoint, '/jobs/<string:id>/skills')
 api.add_resource(SkillEndpoint, '/skills/<string:id>', '/skills')
@@ -33,3 +34,5 @@ api.add_resource(JobEndpoint, '/jobs/<string:id>', endpoint='job_ep')
 api.add_resource(JobEndpoint, '/jobs/', endpoint='all_jobs_ep')
 api.add_resource(SkillAutocompleteEndpoint, '/skills/autocomplete', \
         endpoint='skills_autocomplete')
+api.add_resource(JobAutocompleteEndpoint, '/jobs/autocomplete', \
+        endpoint='jobs_autocomplete')

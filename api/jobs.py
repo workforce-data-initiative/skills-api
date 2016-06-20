@@ -14,6 +14,44 @@ from db.models.job_skills import JobSkill
 from db.models.jobs import Job
 from db.models.jobs import AlternateJobTitle
 
+class JobAutocompleteEndpoint(Resource):
+    def get(self):
+        args = request.args
+        query_mode = ''
+        if args is not None:
+            if 'begins_with' in args.keys():
+                search_string = str(args['begins_with'])
+                query_mode = 'begins_with'
+            elif 'contains' in args.keys():
+                search_string = str(args['contains'])
+                query_mode = 'contains'
+            elif 'ends_with' in args.keys():
+                search_string = str(args['ends_with'])
+                query_mode = 'ends_with'
+            else:
+                abort(400)
+
+            search_string = search_string.replace('"','').strip()
+            all_suggestions = []
+           
+            if query_mode == 'begins_with':
+                results = AlternateJobTitle.query.filter(AlternateJobTitle.title.startswith(search_string)).all()
+
+            if query_mode == 'contains':
+                results = AlternateJobTitle.query.filter(AlternateJobTitle.title.contains(search_string)).all()
+
+            if query_mode == 'ends_with':
+                results = AlternateJobTitle.query.filter(AlternateJobTitle.title.endswith(search_string)).all()
+
+            for result in results:
+                suggestion = {}
+                suggestion['suggestion'] = result.title
+                all_suggestions.append(suggestion)
+
+            return all_suggestions
+        else:
+            abort(400)
+
 class JobEndpoint(Resource):
     def get(self, id=None):
         if id is not None:
