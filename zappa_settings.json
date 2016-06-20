@@ -1,6 +1,7 @@
 {
     "dev": {
         "s3_bucket": "trak-lambda",
-        "app_function": "app.app.app"
+        "app_function": "app.app.app",
+        "exclude": ["*.tsv", "*.csv"]
     }
 }
