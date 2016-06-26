@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 # make_config.sh - Create a configuration file for the application.
 #
-# Usage: ./make_config [--development | --testing | --production]
+# Usage: ./make_config.sh [--development | --testing | --production]
 # -----------------------------------------------------------------------------
 
 SCRIPT_NAME=`basename "$0"`
