@@ -3,7 +3,6 @@
 """
 api.version.v1_0.models.skill_master
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 """
 
 from app.app import db

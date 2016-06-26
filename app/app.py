@@ -20,6 +20,5 @@ app.config.from_object('config.config.Config')
 api = Api(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
 import api.v1_0
 import api.v1_1

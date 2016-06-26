@@ -6,4 +6,3 @@ api.v1_0.endpoints
 
 """
 
-from . import SkilMaster
