@@ -2,3 +2,4 @@
 .python-version
 venv/
 config/
+zappa_settings.json

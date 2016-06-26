@@ -20,5 +20,10 @@ app.config.from_object('config.config.Config')
 api = Api(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-import api.v1_0
-import api.v1_1
+
+from api.v1_0 import api_bp as api_1_0_blueprint
+
+# register api blueprints for versions
+app.register_blueprint(api_1_0_blueprint, url_prefix='/v1.0')
+
+
