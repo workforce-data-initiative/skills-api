@@ -1,0 +1,4 @@
+*.pyc
+.python-version
+venv/
+config/
