@@ -14,7 +14,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_restful import Api
 
 app = Flask(__name__)
-app.config.from_object(config.config.Config)
+app.config.from_object('config.config.Config')
 
 api = Api(app)
 db = SQLAlchemy(app)
