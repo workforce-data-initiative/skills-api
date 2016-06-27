@@ -5,7 +5,7 @@ commun.utils
 ~~~~~~~~~~~~
 
 """
-
+import re
 from flask import request
 
 def get_api_version_custom():
@@ -13,4 +13,18 @@ def get_api_version_custom():
 
 
 def get_api_version_accept():
-    pass
+    return request.headers.get('accept')
+
+def parse_version_number(header):
+    version_regex = '\w+/[VvNnDd]{3}\.\w+\.v([0-9\.]+)\+'
+    match = re.search(version_regex, header)
+    if match:
+        found = match.group(1)
+    else:
+        found = header
+
+    return found
+
+def normalize_version_number(version_number):
+    return version_number.replace('.', '_') 
+
