@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """
-api.v1_0.endpoints
+api.v1_1.endpoints
 ~~~~~~~~~~~~~~~~~~
 
 """
 
-from .. v1_0.models import SkilMaster
+from flask import abort, request
+from flask_restful import Resource
+
+class TestEndPoint(Resource):
+    def get(self):
+        return 'wii would like to play too'
