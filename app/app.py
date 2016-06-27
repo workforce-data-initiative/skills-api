@@ -21,10 +21,12 @@ api = Api(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+from api.router import api_bp as api_router_blueprint
 from api.v1_0 import api_bp as api_1_0_blueprint
 from api.v1_1 import api_bp as api_1_1_blueprint
 
 # register api blueprints for versions
+app.register_blueprint(api_router_blueprint)
 app.register_blueprint(api_1_0_blueprint, url_prefix='/v1.0')
 app.register_blueprint(api_1_1_blueprint, url_prefix='/v1.1')
 
