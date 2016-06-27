@@ -11,13 +11,20 @@ from flask_restful import Api
 api_bp = Blueprint('api_router', __name__)
 api = Api(api_bp)
 
-#from . models.skills_master import SkillMaster
-#from . models.skills_related import SkillRelated
-#from . models.jobs_master import JobMaster
-#from . models.jobs_alternate_titles import JobAlternateTitle
-
-from . endpoints import TestEndPoint
+from . endpoints import *
 
 # endpoints go here
-api.add_resource(TestEndPoint, '/foo')
-
+api.add_resource(JobTitleAutocompleteEndpoint, '/1')
+api.add_resource(JobTitleNormalizeEndpoint, '/2')
+api.add_resource(JobTitleFromONetCodeEndpoint, '/3')
+api.add_resource(SkillNameAutocompleteEndpoint, '/4')
+api.add_resource(NormalizeSkillNameEndpoint, '/5')
+api.add_resource(NormalizedSkillUUIDFromONetCodeEndpoint, '/6')
+api.add_resource(AssociatedSkillsForJobEndpoint, '/7')
+api.add_resource(AssociatedJobsForJobEndpoint, '/8')
+api.add_resource(AssociatedSkillForSkillEndpoint, '/9')
+api.add_resource(SkillNameAndFrequencyEndpoint, '/10')
+api.add_resource(JobNameFromUUIDEndpoint, '/11')
+api.add_resource(AllJobsEndpoint, '/12')
+api.add_resource(AllSkillsEndpoint, '/13')
+api.add_resource(TestEndPoint, '/14')

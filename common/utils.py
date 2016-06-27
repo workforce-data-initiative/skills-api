@@ -21,7 +21,7 @@ def parse_version_number(header):
     if match:
         found = match.group(1)
     else:
-        found = header
+        found = None
 
     return found
 
