@@ -204,6 +204,7 @@ def load_all_tables():
     load_jobs_alternate_titles()
     load_jobs_unusual_titles()
     #load_skills_related()
+    load_jobs_skills()
 
 if __name__ == '__main__':
     manager.run()
