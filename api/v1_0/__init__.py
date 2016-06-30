@@ -15,6 +15,8 @@ from . models.skills_master import SkillMaster
 from . models.skills_related import SkillRelated
 from . models.jobs_master import JobMaster
 from . models.jobs_alternate_titles import JobAlternateTitle
+from . models.jobs_unusual_titles import JobUnusualTitle
+from . models.jobs_skills import JobSkill
 
 from . endpoints import *
 
