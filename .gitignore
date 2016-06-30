@@ -4,3 +4,4 @@ venv/
 config/
 zappa_settings.json
 tmp/
+config.dev

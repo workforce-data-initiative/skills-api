@@ -154,12 +154,15 @@ def load_jobs_skills():
         if skill_uuid is not None and job_uuid is not None:
             jobs_skills = JobSkill(job_uuid, skill_uuid)
         
-            try:
-                print 'Loading skill ' + skill_uuid + ' with onet-soc-code ' + onet_soc_code
-                db.session.add(jobs_skills)
-                db.session.commit()
-            except:
-                print '\t ----> Could not add skill ' + skill_name
+            if JobSkill.query.filter_by(job_uuid = job_uuid).filter_by(skill_uuid = skill_uuid).count() == 0:
+                try:
+                    print 'Loading skill ' + skill_uuid + ' with onet-soc-code ' + onet_soc_code
+                    db.session.add(jobs_skills)
+                    db.session.commit()
+                except:
+                    print '\t ----> Could not add skill ' + skill_name
+            else:
+                print 'Skipping ' + skill_name + ' ' + job_uuid
         else:
             print 'Cannot match jobs to skill ' + skill_name
 
@@ -190,7 +193,6 @@ def load_jobs_unusual_titles():
                 try:
                     db.session.add(unusual_job_title)
                     db.session.commit()
-                    created_uuids.append(job_title_uuid)
                 except:
                     print '\t ----> Could not add unusual job title' + title
             else:
