@@ -31,8 +31,8 @@ class JobTitleNormalizeEndpoint(Resource):
         return route_api('jobtitlenormalizeendpoint')
 
 class JobTitleFromONetCodeEndpoint(Resource):
-    def get(self):
-        pass
+    def get(self, id=None):
+        return route_api('jobtitlefromonetcodeendpoint', id=id)
 
 class NormalizeSkillNameEndpoint(Resource):
     def get(self):

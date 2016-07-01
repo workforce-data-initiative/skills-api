@@ -166,8 +166,32 @@ class JobTitleNormalizeEndpoint(Resource):
             return create_error({'message': 'No normalized job titles found'}, 404)    
             
 class JobTitleFromONetCodeEndpoint(Resource):
-    def get(self):
-        return "endpoint 3"
+    def get(self, id=None):
+        if id is not None:
+            result = JobMaster.query.filter_by(onet_soc_code = id).first()
+            if result is None:
+                result = JobMaster.query.filter_by(uuid = id).first()
+
+            if result is None:
+                create_error({'message':'Cannot find job with id ' + id}, 404)
+            else:
+                output = OrderedDict()
+                output['uuid'] = result.uuid
+                output['onet_soc_code'] = result.onet_soc_code
+                output['title'] = result.title
+                output['description'] = result.description
+                output['related_job_titles'] = []
+                
+                # alternate job titles
+                alt_titles = JobAlternateTitle.query.filter_by(job_uuid = result.uuid).all()
+                for alt_title in alt_titles:
+                    title = OrderedDict()
+                    title['uuid'] = alt_title.uuid
+                    title['title'] = alt_title.title
+                    output['related_job_titles'].append(title)
+                
+                return create_response(output, 200)
+
 
 class NormalizeSkillNameEndpoint(Resource):
     def get(self):
