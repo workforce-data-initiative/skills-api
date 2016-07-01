@@ -20,7 +20,7 @@ class AllSkillsEndpoint(Resource):
 
 class JobTitleAutocompleteEndpoint(Resource):
     def get(self):
-        pass
+        return route_api('jobtitleautocompleteendpoint')
 
 class JobTitleNormalizeEndpoint(Resource):
     def get(self):

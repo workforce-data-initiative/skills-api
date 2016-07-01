@@ -11,6 +11,7 @@ from flask_restful import Resource
 from  common.utils import create_response, create_error 
 from . models.jobs_master import JobMaster
 from . models.skills_master import SkillMaster
+from . models.jobs_alternate_titles import JobAlternateTitle
 from collections import OrderedDict
 
 class AllJobsEndpoint(Resource):
@@ -48,7 +49,47 @@ class AllSkillsEndpoint(Resource):
 
 class JobTitleAutocompleteEndpoint(Resource):
     def get(self):
-        return create_response({'foo':'bar'}, 200)
+        args = request.args
+            
+        query_mode = ''
+        if args is not None:
+            if 'begins_with' in args.keys():
+                search_string = str(args['begins_with'])
+                query_mode = 'begins_with'
+            elif 'contains' in args.keys():
+                search_string = str(args['contains'])
+                query_mode = 'contains'
+            elif 'ends_with' in args.keys():
+                search_string = str(args['ends_with'])
+                query_mode = 'ends_with'
+            else:
+                return create_error({'message': 'Invalid query mode specified for autocomplete'}, 400)
+
+            search_string = search_string.replace('"','').strip()
+            all_suggestions = []
+           
+            if query_mode == 'begins_with':
+                results = JobAlternateTitle.query.filter(JobAlternateTitle.title.startswith(search_string)).all()
+
+            if query_mode == 'contains':
+                results = JobAlternateTitle.query.filter(JobAlternateTitle.title.contains(search_string)).all()
+
+            if query_mode == 'ends_with':
+                results = JobAlternateTitle.query.filter(JobAlternateTitle.title.endswith(search_string)).all()
+
+            if len(results) == 0:
+                return create_error({'message': 'No job title suggestions found'}, 404)                
+
+            for result in results:
+                suggestion = {}
+                suggestion['suggestion'] = result.title
+                suggestion['uuid'] = result.uuid
+                suggestion['parent_uuid'] = result.job_uuid
+                all_suggestions.append(suggestion)
+
+            return create_response(all_suggestions, 200)
+        else:
+            return create_error({'message': 'No job title suggestions found'}, 404)
 
 class JobTitleNormalizeEndpoint(Resource):
     def get(self):

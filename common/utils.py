@@ -39,15 +39,15 @@ def create_error(data, status):
     response.headers['Content-Type'] = "application/json"
     return response
 
-def route_api(endpoint_class=None):
+def route_api(endpoint_class):
     api_version = get_api_version_custom()
     if api_version is not None:
         endpoint = 'api_v' + normalize_version_number(api_version) + '.' + endpoint_class
-        return redirect(url_for(endpoint))
+        return redirect(url_for(endpoint, **request.args))
     else:
         api_version = get_api_version_accept()
         if api_version is not None:
             endpoint = 'api_v' + normalize_version_number(parse_version_number(api_version)) + '.' + endpoint_class
-            return redirect(url_for(endpoint))
+            return redirect(url_for(endpoint, **request.args))
         else:
             return create_error({'message':'A version header is missing from the request'}, 400)

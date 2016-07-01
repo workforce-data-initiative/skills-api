@@ -16,7 +16,7 @@ from . endpoints import *
 # endpoints go here
 api.add_resource(AllJobsEndpoint, '/jobs')
 api.add_resource(AllSkillsEndpoint, '/skills')
-api.add_resource(JobTitleAutocompleteEndpoint, '/1')
+api.add_resource(JobTitleAutocompleteEndpoint, '/jobs/autocomplete')
 api.add_resource(JobTitleNormalizeEndpoint, '/2')
 api.add_resource(JobTitleFromONetCodeEndpoint, '/3')
 api.add_resource(SkillNameAutocompleteEndpoint, '/4')
