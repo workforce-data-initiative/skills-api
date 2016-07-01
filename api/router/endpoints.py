@@ -22,15 +22,15 @@ class JobTitleAutocompleteEndpoint(Resource):
     def get(self):
         return route_api('jobtitleautocompleteendpoint')
 
+class SkillNameAutocompleteEndpoint(Resource):
+    def get(self):
+        return route_api('skillnameautocompleteendpoint')
+
 class JobTitleNormalizeEndpoint(Resource):
     def get(self):
-        pass
+        return route_api('jobtitlenormalizeendpoint')
 
 class JobTitleFromONetCodeEndpoint(Resource):
-    def get(self):
-        pass
-
-class SkillNameAutocompleteEndpoint(Resource):
     def get(self):
         pass
 

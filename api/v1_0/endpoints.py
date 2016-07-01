@@ -12,6 +12,7 @@ from  common.utils import create_response, create_error
 from . models.jobs_master import JobMaster
 from . models.skills_master import SkillMaster
 from . models.jobs_alternate_titles import JobAlternateTitle
+from . models.jobs_unusual_titles import JobUnusualTitle
 from collections import OrderedDict
 
 class AllJobsEndpoint(Resource):
@@ -63,7 +64,7 @@ class JobTitleAutocompleteEndpoint(Resource):
                 search_string = str(args['ends_with'])
                 query_mode = 'ends_with'
             else:
-                return create_error({'message': 'Invalid query mode specified for autocomplete'}, 400)
+                return create_error({'message': 'Invalid query mode specified for job title autocomplete'}, 400)
 
             search_string = search_string.replace('"','').strip()
             all_suggestions = []
@@ -91,17 +92,82 @@ class JobTitleAutocompleteEndpoint(Resource):
         else:
             return create_error({'message': 'No job title suggestions found'}, 404)
 
+class SkillNameAutocompleteEndpoint(Resource):
+    def get(self):
+        args = request.args
+            
+        query_mode = ''
+        if args is not None:
+            if 'begins_with' in args.keys():
+                search_string = str(args['begins_with'])
+                query_mode = 'begins_with'
+            elif 'contains' in args.keys():
+                search_string = str(args['contains'])
+                query_mode = 'contains'
+            elif 'ends_with' in args.keys():
+                search_string = str(args['ends_with'])
+                query_mode = 'ends_with'
+            else:
+                return create_error({'message': 'Invalid query mode specified for skill name autocomplete'}, 400)
+
+            search_string = search_string.replace('"','').strip()
+            all_suggestions = []
+           
+            if query_mode == 'begins_with':
+                results = SkillMaster.query.filter(SkillMaster.skill_name.startswith(search_string)).all()
+
+            if query_mode == 'contains':
+                results = SkillMaster.query.filter(SkillMaster.skill_name.contains(search_string)).all()
+
+            if query_mode == 'ends_with':
+                results = SkillMaster.query.filter(SkillMaster.skill_name.endswith(search_string)).all()
+
+            if len(results) == 0:
+                return create_error({'message': 'No skill name suggestions found'}, 404)                
+
+            for result in results:
+                suggestion = {}
+                suggestion['suggestion'] = result.skill_name
+                suggestion['uuid'] = result.uuid
+                all_suggestions.append(suggestion)
+
+            return create_response(all_suggestions, 200)
+        else:
+            return create_error({'message': 'No skill name suggestions found'}, 404)
+
 class JobTitleNormalizeEndpoint(Resource):
     def get(self):
-        return "endpoint 2"
+        args = request.args
+        
+        if args is not None:
+            if 'title' in args.keys():
+                search_string = str(args['title'])
+            else:
+                return create_error({'message': 'Invalid parameter specified for job normalization'}, 400)
 
+            search_string = search_string.replace('"','').strip()
+            all_suggestions = []
+            
+            results = JobUnusualTitle.query.filter(JobUnusualTitle.title.contains(search_string)).all()
+
+            if len(results) == 0:
+                return create_error({'message': 'No normalized job title found'}, 404)                
+
+            for result in results:
+                suggestion = {}
+                suggestion['title'] = result.title
+                suggestion['uuid'] = result.uuid
+                suggestion['parent_uuid'] = result.job_uuid
+                suggestion['description'] = result.description
+                all_suggestions.append(suggestion)
+
+            return create_response(all_suggestions, 200)
+        else:
+            return create_error({'message': 'No job title suggestions found'}, 404)    
+            
 class JobTitleFromONetCodeEndpoint(Resource):
     def get(self):
         return "endpoint 3"
-
-class SkillNameAutocompleteEndpoint(Resource):
-    def get(self):
-        return "endpoint 4"
 
 class NormalizeSkillNameEndpoint(Resource):
     def get(self):
