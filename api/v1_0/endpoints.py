@@ -287,8 +287,47 @@ class AssociatedJobsForSkillEndpoint(Resource):
             return create_error({'message': 'No skill UUID specified for query'}, 400)
 
 class AssociatedJobsForJobEndpoint(Resource):
-    def get(self):
-        return "endpoint 8"
+    def get(self, id=None):
+        if id is not None:
+            parent_uuid = None
+            result = JobMaster.query.filter_by(uuid = id).first()
+            if result is None:
+                result = JobAlternateTitle.query.filter_by(uuid = id).first()
+                if result is None:
+                    result = JobUnusualTitle.query.filter_by(uuid = id).first()
+                    if result is None:
+                        parent_uuid = result.job_id
+                    else:
+                        return create_error({'message': 'No job found matching the specified uuid ' + id}, 404)
+                else:
+                    parent_uuid = result.job_uuid
+            else:
+                parent_uuid = result.uuid
+    
+            output = OrderedDict()
+            output['related_job_titles'] = []
+            output['unusual_job_titles'] = []
+                
+            # alternate job titles
+            alt_titles = JobAlternateTitle.query.filter_by(job_uuid = parent_uuid).all()
+            for alt_title in alt_titles:
+                title = OrderedDict()
+                title['uuid'] = alt_title.uuid
+                title['title'] = alt_title.title
+                output['related_job_titles'].append(title)
+                
+            # unusual job titles
+            other_titles = JobUnusualTitle.query.filter_by(job_uuid = parent_uuid).all()
+            for other_title in other_titles:
+                title = OrderedDict()
+                title['uuid'] = other_title.uuid
+                title['title'] = other_title.title
+                output['unusual_job_titles'].append(title)
+
+            
+            return create_response(output, 200)
+        else:
+            return create_error({'message': 'No Job UUID specified for query'}, 400)
 
 class AssociatedSkillForSkillEndpoint(Resource):
     def get(self):
