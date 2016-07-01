@@ -173,7 +173,25 @@ class JobTitleFromONetCodeEndpoint(Resource):
                 result = JobMaster.query.filter_by(uuid = id).first()
 
             if result is None:
-                create_error({'message':'Cannot find job with id ' + id}, 404)
+                # search for a related job
+                result = JobAlternateTitle.query.filter_by(uuid = id).first()
+                if result is not None:
+                    output = OrderedDict()
+                    output['uuid'] = result.uuid
+                    output['title'] = result.title
+                    output['parent_uuid'] = result.job_uuid
+                    return create_response(output, 200)
+                else:
+                    result = JobUnusualTitle.query.filter_by(uuid = id).first()
+                    if result is not None:
+                        output = OrderedDict()
+                        output['uuid'] = result.uuid
+                        output['title'] = result.title
+                        output['description'] = result.description
+                        output['parent_uuid'] = result.job_uuid
+                        return create_response(output, 200)
+                    else:
+                        return create_error({'message':'Cannot find job with id ' + id}, 404)
             else:
                 output = OrderedDict()
                 output['uuid'] = result.uuid
@@ -181,6 +199,7 @@ class JobTitleFromONetCodeEndpoint(Resource):
                 output['title'] = result.title
                 output['description'] = result.description
                 output['related_job_titles'] = []
+                output['unusual_job_titles'] = []
                 
                 # alternate job titles
                 alt_titles = JobAlternateTitle.query.filter_by(job_uuid = result.uuid).all()
@@ -189,6 +208,15 @@ class JobTitleFromONetCodeEndpoint(Resource):
                     title['uuid'] = alt_title.uuid
                     title['title'] = alt_title.title
                     output['related_job_titles'].append(title)
+                
+                # unusual job titles
+                other_titles = JobUnusualTitle.query.filter_by(job_uuid = result.uuid).all()
+                for other_title in other_titles:
+                    title = OrderedDict()
+                    title['uuid'] = other_title.uuid
+                    title['title'] = other_title.title
+                    output['unusual_job_titles'].append(title)
+                
                 
                 return create_response(output, 200)
 
