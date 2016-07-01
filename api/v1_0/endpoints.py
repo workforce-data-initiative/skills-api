@@ -251,8 +251,40 @@ class NormalizeSkillNameEndpoint(Resource):
             return create_error({'message': 'No normalized skill names found'}, 404) 
 
 class AssociatedSkillsForJobEndpoint(Resource):
-    def get(self):
-        return "endpoint 7"
+    def get(self, id=None):
+        if id is not None:
+            results = JobSkill.query.filter_by(job_uuid = id).all()
+            if len(results) > 0:
+                all_skills = {}
+                all_skills['job_uuid'] = id
+                all_skills['skills'] = []
+                for result in results:
+                    skill ={}
+                    skill['skill_uuid'] = result.skill_uuid
+                    all_skills['skills'].append(skill)
+                return create_response(all_skills, 200)
+            else:
+                return create_error({'message': 'No associated skills found for job ' + id}, 404)
+        else:
+            return create_error({'message': 'No job UUID specified for query'}, 400)
+
+class AssociatedJobsForSkillEndpoint(Resource):
+   def get(self, id=None):
+        if id is not None:
+            results = JobSkill.query.filter_by(skill_uuid = id).all()
+            if len(results) > 0:
+                all_jobs = {}
+                all_jobs['skill_uuid'] = id
+                all_jobs['jobs'] = []
+                for result in results:
+                    job ={}
+                    job['job_uuid'] = result.job_uuid
+                    all_jobs['jobs'].append(job)
+                return create_response(all_jobs, 200)
+            else:
+                return create_error({'message': 'No associated jobs found for skill ' + id}, 404)
+        else:
+            return create_error({'message': 'No skill UUID specified for query'}, 400)
 
 class AssociatedJobsForJobEndpoint(Resource):
     def get(self):

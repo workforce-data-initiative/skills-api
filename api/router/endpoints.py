@@ -43,8 +43,12 @@ class NormalizedSkillUUIDFromONetCodeEndpoint(Resource):
         pass
 
 class AssociatedSkillsForJobEndpoint(Resource):
-    def get(self):
-        pass
+    def get(self, id):
+        return route_api('associatedskillsforjobendpoint', id=id)
+        
+class AssociatedJobsForSkillEndpoint(Resource):
+    def get(self, id):
+        return route_api('associatedjobsforskillendpoint', id=id)
 
 class AssociatedJobsForJobEndpoint(Resource):
     def get(self):
