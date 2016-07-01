@@ -14,6 +14,8 @@ api = Api(api_bp)
 from . endpoints import *
 
 # endpoints go here
+api.add_resource(AllJobsEndpoint, '/jobs')
+api.add_resource(AllSkillsEndpoint, '/skills')
 api.add_resource(JobTitleAutocompleteEndpoint, '/1')
 api.add_resource(JobTitleNormalizeEndpoint, '/2')
 api.add_resource(JobTitleFromONetCodeEndpoint, '/3')
@@ -25,6 +27,3 @@ api.add_resource(AssociatedJobsForJobEndpoint, '/8')
 api.add_resource(AssociatedSkillForSkillEndpoint, '/9')
 api.add_resource(SkillNameAndFrequencyEndpoint, '/10')
 api.add_resource(JobNameFromUUIDEndpoint, '/11')
-api.add_resource(AllJobsEndpoint, '/12')
-api.add_resource(AllSkillsEndpoint, '/13')
-api.add_resource(TestEndPoint, '/14')
