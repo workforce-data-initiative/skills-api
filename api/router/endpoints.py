@@ -55,9 +55,5 @@ class AssociatedSkillForSkillEndpoint(Resource):
         pass
 
 class SkillNameAndFrequencyEndpoint(Resource):
-    def get(self):
-        pass
-
-class JobNameFromUUIDEndpoint(Resource):
-    def get(self):
-        pass
+    def get(self, id=None):
+        return route_api('skillnameandfrequencyendpoint', id=id)

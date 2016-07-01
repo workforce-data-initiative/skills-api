@@ -13,6 +13,7 @@ from . models.jobs_master import JobMaster
 from . models.skills_master import SkillMaster
 from . models.jobs_alternate_titles import JobAlternateTitle
 from . models.jobs_unusual_titles import JobUnusualTitle
+from . models.jobs_skills import JobSkill
 from collections import OrderedDict
 
 class AllJobsEndpoint(Resource):
@@ -249,10 +250,6 @@ class NormalizeSkillNameEndpoint(Resource):
         else:
             return create_error({'message': 'No normalized skill names found'}, 404) 
 
-class NormalizedSkillUUIDFromONetCodeEndpoint(Resource):
-    def get(self):
-        return "endpoint 6"
-
 class AssociatedSkillsForJobEndpoint(Resource):
     def get(self):
         return "endpoint 7"
@@ -266,10 +263,35 @@ class AssociatedSkillForSkillEndpoint(Resource):
         return "endpoint 9"
 
 class SkillNameAndFrequencyEndpoint(Resource):
-    def get(self):
-        return "endpoint 10"
-
-class JobNameFromUUIDEndpoint(Resource):
-    def get(self):
-        return "endpoint 11"
-
+    def get(self, id=None):
+        if id is not None:
+            result = SkillMaster.query.filter_by(uuid = id).first()
+            if result is None:
+                all_skills = {}
+                job = JobMaster.query.filter_by(onet_soc_code = id).first()
+                if job is not None:
+                    search_uuid = job.uuid
+                else:
+                    return create_error({'message':'Cannot find skills associated with id ' + id}, 404)
+                
+                results = JobSkill.query.filter_by(job_uuid = search_uuid).all()
+                if len(results) == 0:
+                    return create_error({'message':'Cannot find skills associated with id ' + id}, 404)
+                else:
+                    all_skills['onet_soc_code'] = id
+                    all_skills['job_uuid'] = search_uuid
+                    all_skills['title'] = job.title
+                    all_skills['skills'] = []
+                    for result in results: 
+                        output = OrderedDict()
+                        output['skill_uuid'] = result.skill_uuid
+                        all_skills['skills'].append(output)
+              
+                    return create_response(all_skills, 200)
+            else:
+                output = OrderedDict()
+                output['uuid'] = result.uuid
+                output['skill_name'] = result.skill_name
+                output['count'] = result.count
+              
+                return create_response(output, 200)
