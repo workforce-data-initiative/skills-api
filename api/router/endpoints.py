@@ -36,7 +36,7 @@ class JobTitleFromONetCodeEndpoint(Resource):
 
 class NormalizeSkillNameEndpoint(Resource):
     def get(self):
-        pass
+        return route_api('normalizeskillnameendpoint')
 
 class NormalizedSkillUUIDFromONetCodeEndpoint(Resource):
     def get(self):

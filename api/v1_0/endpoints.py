@@ -143,7 +143,7 @@ class JobTitleNormalizeEndpoint(Resource):
             if 'title' in args.keys():
                 search_string = str(args['title'])
             else:
-                return create_error({'message': 'Invalid parameter specified for job normalization'}, 400)
+                return create_error({'message': 'Invalid parameter specified for job title normalization'}, 400)
 
             search_string = search_string.replace('"','').strip()
             all_suggestions = []
@@ -151,7 +151,7 @@ class JobTitleNormalizeEndpoint(Resource):
             results = JobUnusualTitle.query.filter(JobUnusualTitle.title.contains(search_string)).all()
 
             if len(results) == 0:
-                return create_error({'message': 'No normalized job title found'}, 404)                
+                return create_error({'message': 'No normalized job titles found'}, 404)                
 
             for result in results:
                 suggestion = {}
@@ -163,7 +163,7 @@ class JobTitleNormalizeEndpoint(Resource):
 
             return create_response(all_suggestions, 200)
         else:
-            return create_error({'message': 'No job title suggestions found'}, 404)    
+            return create_error({'message': 'No normalized job titles found'}, 404)    
             
 class JobTitleFromONetCodeEndpoint(Resource):
     def get(self):
@@ -171,7 +171,31 @@ class JobTitleFromONetCodeEndpoint(Resource):
 
 class NormalizeSkillNameEndpoint(Resource):
     def get(self):
-        return "endpoint 5"
+        args = request.args
+        
+        if args is not None:
+            if 'title' in args.keys():
+                search_string = str(args['title'])
+            else:
+                return create_error({'message': 'Invalid parameter specified for skill name normalization'}, 400)
+
+            search_string = search_string.replace('"','').strip()
+            all_suggestions = []
+            
+            results = SkillMaster.query.filter(SkillMaster.skill_name.contains(search_string)).all()
+
+            if len(results) == 0:
+                return create_error({'message': 'No normalized skill names found'}, 404)                
+
+            for result in results:
+                suggestion = {}
+                suggestion['skill_name'] = result.skill_name
+                suggestion['uuid'] = result.uuid
+                all_suggestions.append(suggestion)
+
+            return create_response(all_suggestions, 200)
+        else:
+            return create_error({'message': 'No normalized skill names found'}, 404) 
 
 class NormalizedSkillUUIDFromONetCodeEndpoint(Resource):
     def get(self):
