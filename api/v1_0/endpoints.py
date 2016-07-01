@@ -330,8 +330,24 @@ class AssociatedJobsForJobEndpoint(Resource):
             return create_error({'message': 'No Job UUID specified for query'}, 400)
 
 class AssociatedSkillForSkillEndpoint(Resource):
-    def get(self):
-        return "endpoint 9"
+    def get(self, id=None):
+        if id is not None:
+            result = SkillMaster.query.filter_by(uuid = id).first()
+            if result is not None:
+                all_skills = {}
+                skills = SkillMaster.query.filter(SkillMaster.skill_name.contains(result.skill_name)).all()
+                if len(skills) > 0:
+                    all_skills['skills'] = []
+                    for skill in skills:
+                        output = OrderedDict()
+                        output['skill_uuid'] = skill.uuid
+                        output['skill_name'] = skill.skill_name
+                        all_skills['skills'].append(output)
+                    return create_response(all_skills, 200)
+            else:
+                return create_error({'message':'Cannot find skills associated with id ' + id}, 404)
+        else:
+            return create_error({'message': 'No skill UUID specified for query'}, 400)
 
 class SkillNameAndFrequencyEndpoint(Resource):
     def get(self, id=None):
