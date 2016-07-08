@@ -63,3 +63,4 @@ target/
 venv/
 config/
 api_config/
+*.tsv
