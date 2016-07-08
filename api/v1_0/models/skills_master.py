@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
 """
-db.models.skills_master
-~~~~~~~~~~~~~~~~~~~~~~~~
-An ORM class representing the Skills_Master database table.
+api.version.v1_0.models.skill_master
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 
 from app.app import db
 
 class SkillMaster(db.Model):
     __tablename__ = 'skills_master'
-    
+
     uuid = db.Column(db.String, primary_key=True)
     onet_soc_code = db.Column(db.String)
     onet_element_id = db.Column(db.String)

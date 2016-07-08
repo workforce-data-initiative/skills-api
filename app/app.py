@@ -1,37 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask
+"""
+app.app
+~~~~~~~
+
+OpenSkills API application root.
+
+"""
+
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
-
 from flask_restful import Api
 
-app = Flask(__name__)
-app.config.from_object('api_config.config.Config')
 
-api = Api(app)
+app = Flask(__name__)
+app.config.from_object('config.config.Config')
+
+api = Api(app, catch_all_404s=True)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+from api.router import api_bp as api_router_blueprint
+from api.v1_0 import api_bp as api_1_0_blueprint
+# from api.v1_1 import api_bp as api_1_1_blueprint
 
-from db.models.skills_master import SkillMaster
-from db.models.related_skills import RelatedSkill
-from db.models.job_skills import JobSkill
-from db.models.jobs import Job
-from db.models.jobs import AlternateJobTitle
+# register api blueprints for versions
+app.register_blueprint(api_router_blueprint)
+app.register_blueprint(api_1_0_blueprint, url_prefix='/v1.0')
+# app.register_blueprint(api_1_1_blueprint, url_prefix='/v1.1')
 
-from api.jobs import JobSkillEndpoint
-from api.skills import SkillEndpoint
-from api.skills import ONETSkillEndpoint
-from api.skills import SkillAutocompleteEndpoint
-from api.jobs import JobEndpoint
-from api.jobs import JobAutocompleteEndpoint
-
-api.add_resource(JobSkillEndpoint, '/jobs/<string:id>/skills')
-api.add_resource(SkillEndpoint, '/skills/<string:id>', '/skills')
-api.add_resource(ONETSkillEndpoint, '/skills/<string:id>/uuids')
-api.add_resource(JobEndpoint, '/jobs/<string:id>', '/jobs', endpoint='job_ep')
-api.add_resource(SkillAutocompleteEndpoint, '/skills/autocomplete', \
-        endpoint='skills_autocomplete')
-api.add_resource(JobAutocompleteEndpoint, '/jobs/autocomplete', \
-        endpoint='jobs_autocomplete')

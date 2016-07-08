@@ -1,10 +1,9 @@
 #!/bin/sh
 
 # -----------------------------------------------------------------------------
-# make_config.sh
-#   Create a configuration file for the application.
+# make_config.sh - Create a configuration file for the application.
 #
-#   Usage: ./make_config [--development | --testing | --production]
+# Usage: ./make_config.sh [--development | --testing | --production]
 # -----------------------------------------------------------------------------
 
 SCRIPT_NAME=`basename "$0"`
@@ -16,7 +15,7 @@ else
     SOURCE_DIR=.
 fi
 
-CONFIG_DIR=$SOURCE_DIR/api_config
+CONFIG_DIR=$SOURCE_DIR/config
 CONFIG_MODE=$1
 
 if [ -z $CONFIG_MODE ]; then
@@ -73,7 +72,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = '${DATABASE_URI}'
 EOF
 
-# All done, return to 
+# All done, return to the home directory.
 cd $CURRENT_DIR
 echo "Application configuration completed. WARNING: Please DO NOT add the api_config module to the code repo as it may expose credentials!"
 exit 0
