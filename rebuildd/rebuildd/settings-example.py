@@ -1,7 +1,0 @@
-DB_NAME = ''
-DB_USERNAME = ''
-DB_PWD = ''
-DB_HOST = ''
-DB_PORT = ''
-JDBC_URL = ''
-CONSERV_DATABASE_CONN = ''
