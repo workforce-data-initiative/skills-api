@@ -20,7 +20,7 @@ from collections import OrderedDict
 class AllJobsEndpoint(Resource):
     @swagger.operation(
         description = "Retrieve All Jobs",
-        summary = "Retrieves the names and UUIDs of all jobs.",
+        summary = "Retrieve the names and UUIDs of all jobs",
         notes = "The job collection is huge and may take a while before the API call returns the full dataset.",
         responseMessages = [
             {
@@ -52,7 +52,7 @@ class AllJobsEndpoint(Resource):
 class AllSkillsEndpoint(Resource):
     @swagger.operation(
         description = "Retrieve All Skills",
-        summary = "Retrieves the names and UUIDs of all skills.",
+        summary = "Retrieve the names and UUIDs of all skills",
         notes = "The skill collection is huge and may take a while before the API call returns the full dataset.",
         responseMessages = [
             {
@@ -83,8 +83,8 @@ class AllSkillsEndpoint(Resource):
 class JobTitleAutocompleteEndpoint(Resource):
     @swagger.operation(
         description = "Job Title Autocomplete",
-        summary = "Allows autocompletion of a job title as a user is typing.",
-        notes = "Append the parameters, begins_with, contains, and ends_with to the request URL",
+        summary = "Retrieve job titles matching a given text fragment",
+        notes = "Append the parameters, begins_with, contains, and ends_with to the request URL.",
         parameters = [
             {
                 "name": "begins_with",
@@ -168,9 +168,9 @@ class JobTitleAutocompleteEndpoint(Resource):
 
 class SkillNameAutocompleteEndpoint(Resource):
     @swagger.operation(
-        description = "Job Title Autocomplete",
-        summary = "Allows autocompletion of a skill name as a user is typing.",
-        notes = "Append the parameters, begins_with, contains, and ends_with to the request URL",
+        description = "Skill Name Autocomplete",
+        summary = "Retrieve skill names matching a given text fragment",
+        notes = "Append the parameters, begins_with, contains, and ends_with to the request URL.",
         parameters = [
             {
                 "name": "begins_with",
@@ -254,7 +254,7 @@ class SkillNameAutocompleteEndpoint(Resource):
 class JobTitleNormalizeEndpoint(Resource):
     @swagger.operation(
         description = "Normalize Job Title",
-        summary = "Find the canonical job title (like \"Baker\") for an entered synonymous job title (like \"Cupcake ninja\")",
+        summary = "Retrieve the canonical job title for a synonymous job title",
         notes = "Append the parameter title to the request URL (may be a partial or complete job title).",
         parameters = [
             {
@@ -311,6 +311,28 @@ class JobTitleNormalizeEndpoint(Resource):
             
 class JobTitleFromONetCodeEndpoint(Resource):
     @swagger.operation(
+        description = "Get Job Title By O*NET SOC Code or UUID",
+        summary = "Retrieve a job title by its O*NET SOC Code or job UUID",
+        notes = "This endpoint actually supports two use cases defined by the original API specification.",
+        parameters = [
+            {
+                "name": "id",
+                "paramType": "path",
+                "description": "The O*NET SOC Code or job UUID to retrieve the job title of.",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a job that matches the O*NET SOC code or job UUID."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any jobs that matches the O*NET SOC code or job UUID."
+            }
+        ]
     )
     def get(self, id=None):
         if id is not None:
@@ -370,7 +392,7 @@ class JobTitleFromONetCodeEndpoint(Resource):
 class NormalizeSkillNameEndpoint(Resource):
     @swagger.operation(
         description = "Normalize Skill Name",
-        summary = "Find the canonical skill name (like “Ruby programming”) for an entered synonymous skill name (like “Coding in Ruby”)",
+        summary = "Retrieve the canonical skill name for a synonymous skill name",
         notes = "Append the parameter skill_name to the request URL (may be a partial or complete skill name).",
         parameters = [
             {
@@ -425,6 +447,27 @@ class NormalizeSkillNameEndpoint(Resource):
 
 class AssociatedSkillsForJobEndpoint(Resource):
     @swagger.operation(
+        description = "Get Associated Skills For Job",
+        summary = "Retrieve all skills associated with a particular job",
+        parameters = [
+            {
+                "name": "id",
+                "paramType": "path",
+                "description": "Job UUID to find associated skills.",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of skills matching the given job uuid."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any skills matching the given job uuid."
+            }
+        ]
     )
     def get(self, id=None):
         if id is not None:
@@ -445,7 +488,27 @@ class AssociatedSkillsForJobEndpoint(Resource):
 
 class AssociatedJobsForSkillEndpoint(Resource):
     @swagger.operation(
-
+        description = "Get Associated Jobs For Skill",
+        summary = "Retrieve all jobs associated with a particular skill",
+        parameters = [
+            {
+                "name": "id",
+                "paramType": "path",
+                "description": "Skill UUID to find associated jobs.",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of jobs matching the given skill uuid."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any jobs matching the given skill uuid."
+            }
+        ]
     )
     def get(self, id=None):
         if id is not None:
@@ -466,6 +529,27 @@ class AssociatedJobsForSkillEndpoint(Resource):
 
 class AssociatedJobsForJobEndpoint(Resource):
     @swagger.operation(
+        description = "Get Associated Jobs For Job",
+        summary = "Retrieve all jobs closely associated with a particular job.",
+        parameters = [
+            {
+                "name": "id",
+                "paramType": "path",
+                "description": "Job UUID to find associated jobs.",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of jobs matching the given job uuid."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any jobs matching the given job uuid."
+            }
+        ]
     )
     def get(self, id=None):
         if id is not None:
@@ -511,6 +595,27 @@ class AssociatedJobsForJobEndpoint(Resource):
 
 class AssociatedSkillForSkillEndpoint(Resource):
     @swagger.operation(
+        description = "Get Associated Skills For Skill",
+        summary = "Retrieve all skills closely associated with a particular skill.",
+        parameters = [
+            {
+                "name": "id",
+                "paramType": "path",
+                "description": "Skill UUID to find associated skills.",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of skills matching the given skill uuid."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any skills matching the given skill uuid."
+            }
+        ]
     )
     def get(self, id=None):
         if id is not None:
@@ -533,6 +638,27 @@ class AssociatedSkillForSkillEndpoint(Resource):
 
 class SkillNameAndFrequencyEndpoint(Resource):
     @swagger.operation(
+        description = "Get Skill Name By UUID",
+        summary = "Retrieve a skill name by its skill UUID",
+        parameters = [
+            {
+                "name": "id",
+                "paramType": "path",
+                "description": "The skill UUID to retrieve the skill name of.",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a skill that matches the skill UUID."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any skills that match the skill UUID."
+            }
+        ]
     )
     def get(self, id=None):
         if id is not None:
