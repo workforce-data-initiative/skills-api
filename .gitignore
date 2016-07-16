@@ -5,3 +5,4 @@ config/
 zappa_settings.json
 tmp/
 config.*
+*.txt

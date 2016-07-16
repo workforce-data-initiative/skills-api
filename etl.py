@@ -8,6 +8,7 @@ OpenSkills API Extract-Transform-Load utility
 """
 
 import os
+import sys
 import hashlib
 import uuid
 
@@ -70,7 +71,7 @@ def load_skills_master():
 @manager.command
 def load_jobs_master():
     """ Loads the jobs_master table """
-    with open(os.path.join('tmp', 'jobs_master.tsv'), 'r') as f:
+    with open(os.path.join('tmp', 'job_titles_master_table.tsv'), 'r') as f:
         occupations = f.readlines()
 
     # dump the header
@@ -78,12 +79,15 @@ def load_jobs_master():
     
     for occupation in occupations:
         occupation = occupation.strip().split('\t')
-        if occupation[3] == 'n/a':
-            onet_soc_code = str(occupation[0])
-            title = occupation[1]
-            description = occupation[2]
-            job_uuid = str(hashlib.md5(title).hexdigest())
-            job_master = JobMaster(job_uuid, onet_soc_code, title, description)
+        uuid = occupation[5]
+        onet_soc_code = occupation[1]
+        title = occupation[2]
+        original_title = occupation[3]
+        description = occupation[4]
+        nlp_a = occupation[6]
+       
+        if title == original_title:
+            job_master = JobMaster(uuid, onet_soc_code, title, original_title, description, nlp_a)
 
             print 'Adding job ' + title
 
@@ -91,7 +95,8 @@ def load_jobs_master():
                 db.session.add(job_master)
                 db.session.commit()
             except:
-                print '\t ----> Could not add job ' + title
+                print '\t ----> ' + title + " " + original_title
+                #print '\t ----> Could not add job ' + title
 
 @manager.command
 def load_jobs_alternate_titles():
