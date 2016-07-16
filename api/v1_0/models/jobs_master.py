@@ -27,3 +27,7 @@ class JobMaster(db.Model):
 
     def __repr__(self):
         return '<uuid {}>'.format(self.uuid)
+
+    @classmethod
+    def all_uuids(cls):
+        return Session.query.order_by(JobMaster.title.asc()).all()

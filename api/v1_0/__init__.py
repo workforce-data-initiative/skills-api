@@ -7,9 +7,14 @@ api.v1_0
 
 from flask import Blueprint
 from flask_restful import Api
+from flask_restful_swagger import swagger
+
+API_DESCRIPTION = "a complete and standard data store for canonical and emerging " + \
+                    "skills, knowledge, abilities, tools, technolgies, and how " + \
+                    "they relate to jobs."
 
 api_bp = Blueprint('api_v1_0', __name__)
-api = Api(api_bp)
+api = swagger.docs(Api(api_bp), apiVersion='1.0', swaggerVersion='2.0', description=API_DESCRIPTION)
 
 from . models.skills_master import SkillMaster
 from . models.skills_related import SkillRelated

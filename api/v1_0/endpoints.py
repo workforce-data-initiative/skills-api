@@ -8,6 +8,7 @@ api.v1_0.endpoints
 
 from flask import abort, request
 from flask_restful import Resource
+from flask_restful_swagger import swagger
 from  common.utils import create_response, create_error 
 from . models.jobs_master import JobMaster
 from . models.skills_master import SkillMaster
@@ -17,6 +18,21 @@ from . models.jobs_skills import JobSkill
 from collections import OrderedDict
 
 class AllJobsEndpoint(Resource):
+    @swagger.operation(
+        description = "Retrieve All Jobs",
+        summary = "Retrieves the names and UUIDs of all jobs.",
+        notes = "The job collection is huge and may take a while before the API call returns the full dataset.",
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of job titles."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any job titles."
+            }
+        ]
+    )
     def get(self):
         all_jobs = []
         jobs = JobMaster.query.order_by(JobMaster.title.asc()).all()
@@ -34,6 +50,21 @@ class AllJobsEndpoint(Resource):
             return create_error({'message':'No jobs were found'}, 404)
 
 class AllSkillsEndpoint(Resource):
+    @swagger.operation(
+        description = "Retrieve All Skills",
+        summary = "Retrieves the names and UUIDs of all skills.",
+        notes = "The skill collection is huge and may take a while before the API call returns the full dataset.",
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of skills."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any skills."
+            }
+        ]
+    )
     def get(self):
         all_skills = []
         skills = SkillMaster.query.order_by(SkillMaster.count.desc()).all()
@@ -50,6 +81,48 @@ class AllSkillsEndpoint(Resource):
             return create_error({'message':'No skills were found'}, 404)
 
 class JobTitleAutocompleteEndpoint(Resource):
+    @swagger.operation(
+        description = "Job Title Autocomplete",
+        summary = "Allows autocompletion of a job title as a user is typing.",
+        notes = "Append the parameters, begins_with, contains, and ends_with to the request URL",
+        parameters = [
+            {
+                "name": "begins_with",
+                "paramType": "query",
+                "description": "Find job titles beginning with the specified text fragment",
+                "required": False,
+                "type": "string"
+            },
+            {
+                "name": "contains",
+                "paramType": "query",
+                "description": "Find job titles containing the specified text fragment",
+                "required": False,
+                "type": "string"
+            },
+            {
+                "name": "ends_with",
+                "paramType": "query",
+                "description": "Find job titles ending with the specified text fragment",
+                "required": False,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of job titles matching the given string."
+            },
+            {
+                "code" : 400,
+                "message" : "Bad request (i.e. forgotten to specify a parameter or incorrect parameter provided.)"
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any job titles that match the given string."
+            }
+        ]
+    )
     def get(self):
         args = request.args
             
@@ -94,6 +167,48 @@ class JobTitleAutocompleteEndpoint(Resource):
             return create_error({'message': 'No job title suggestions found'}, 404)
 
 class SkillNameAutocompleteEndpoint(Resource):
+    @swagger.operation(
+        description = "Job Title Autocomplete",
+        summary = "Allows autocompletion of a skill name as a user is typing.",
+        notes = "Append the parameters, begins_with, contains, and ends_with to the request URL",
+        parameters = [
+            {
+                "name": "begins_with",
+                "paramType": "query",
+                "description": "Find skill names beginning with the specified text fragment",
+                "required": False,
+                "type": "string"
+            },
+            {
+                "name": "contains",
+                "paramType": "query",
+                "description": "Find skill names containing the specified text fragment",
+                "required": False,
+                "type": "string"
+            },
+            {
+                "name": "ends_with",
+                "paramType": "query",
+                "description": "Find skill names ending with the specified text fragment",
+                "required": False,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of skill names matching the given string."
+            },
+            {
+                "code" : 400,
+                "message" : "Bad request (i.e. forgotten to specify a parameter or incorrect parameter provided.)"
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any skill names that match the given string."
+            }
+        ]
+    )
     def get(self):
         args = request.args
             
@@ -137,12 +252,40 @@ class SkillNameAutocompleteEndpoint(Resource):
             return create_error({'message': 'No skill name suggestions found'}, 404)
 
 class JobTitleNormalizeEndpoint(Resource):
+    @swagger.operation(
+        description = "Normalize Job Title",
+        summary = "Find the canonical job title (like \"Baker\") for an entered synonymous job title (like \"Cupcake ninja\")",
+        notes = "Append the parameter title to the request URL (may be a partial or complete job title).",
+        parameters = [
+            {
+                "name": "job_title",
+                "paramType": "query",
+                "description": "Find job titles matching the specified title (or text fragment)",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of job titles matching the given string."
+            },
+            {
+                "code" : 400,
+                "message" : "Bad request (i.e. forgotten to specify a parameter or incorrect parameter provided.)"
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any job titles that match the given string."
+            }
+        ]
+    )
     def get(self):
         args = request.args
         
         if args is not None:
-            if 'title' in args.keys():
-                search_string = str(args['title'])
+            if 'job_title' in args.keys():
+                search_string = str(args['job_title'])
             else:
                 return create_error({'message': 'Invalid parameter specified for job title normalization'}, 400)
 
@@ -167,6 +310,8 @@ class JobTitleNormalizeEndpoint(Resource):
             return create_error({'message': 'No normalized job titles found'}, 404)    
             
 class JobTitleFromONetCodeEndpoint(Resource):
+    @swagger.operation(
+    )
     def get(self, id=None):
         if id is not None:
             result = JobMaster.query.filter_by(onet_soc_code = id).first()
@@ -223,12 +368,40 @@ class JobTitleFromONetCodeEndpoint(Resource):
 
 
 class NormalizeSkillNameEndpoint(Resource):
+    @swagger.operation(
+        description = "Normalize Skill Name",
+        summary = "Find the canonical skill name (like “Ruby programming”) for an entered synonymous skill name (like “Coding in Ruby”)",
+        notes = "Append the parameter skill_name to the request URL (may be a partial or complete skill name).",
+        parameters = [
+            {
+                "name": "skill_name",
+                "paramType": "query",
+                "description": "Find skill names matching the specified title (or text fragment)",
+                "required": True,
+                "type": "string"
+            }
+        ],        
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of skill names matching the given string."
+            },
+            {
+                "code" : 400,
+                "message" : "Bad request (i.e. forgotten to specify a parameter or incorrect parameter provided.)"
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any skill names that match the given string."
+            }
+        ]
+    )
     def get(self):
         args = request.args
         
         if args is not None:
-            if 'title' in args.keys():
-                search_string = str(args['title'])
+            if 'skill_name' in args.keys():
+                search_string = str(args['skill_name'])
             else:
                 return create_error({'message': 'Invalid parameter specified for skill name normalization'}, 400)
 
@@ -251,6 +424,8 @@ class NormalizeSkillNameEndpoint(Resource):
             return create_error({'message': 'No normalized skill names found'}, 404) 
 
 class AssociatedSkillsForJobEndpoint(Resource):
+    @swagger.operation(
+    )
     def get(self, id=None):
         if id is not None:
             results = JobSkill.query.filter_by(job_uuid = id).all()
@@ -269,7 +444,10 @@ class AssociatedSkillsForJobEndpoint(Resource):
             return create_error({'message': 'No job UUID specified for query'}, 400)
 
 class AssociatedJobsForSkillEndpoint(Resource):
-   def get(self, id=None):
+    @swagger.operation(
+
+    )
+    def get(self, id=None):
         if id is not None:
             results = JobSkill.query.filter_by(skill_uuid = id).all()
             if len(results) > 0:
@@ -287,6 +465,8 @@ class AssociatedJobsForSkillEndpoint(Resource):
             return create_error({'message': 'No skill UUID specified for query'}, 400)
 
 class AssociatedJobsForJobEndpoint(Resource):
+    @swagger.operation(
+    )
     def get(self, id=None):
         if id is not None:
             parent_uuid = None
@@ -330,6 +510,8 @@ class AssociatedJobsForJobEndpoint(Resource):
             return create_error({'message': 'No Job UUID specified for query'}, 400)
 
 class AssociatedSkillForSkillEndpoint(Resource):
+    @swagger.operation(
+    )
     def get(self, id=None):
         if id is not None:
             result = SkillMaster.query.filter_by(uuid = id).first()
@@ -350,6 +532,8 @@ class AssociatedSkillForSkillEndpoint(Resource):
             return create_error({'message': 'No skill UUID specified for query'}, 400)
 
 class SkillNameAndFrequencyEndpoint(Resource):
+    @swagger.operation(
+    )
     def get(self, id=None):
         if id is not None:
             result = SkillMaster.query.filter_by(uuid = id).first()
