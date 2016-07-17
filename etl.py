@@ -76,61 +76,89 @@ def load_jobs_master():
 
     # dump the header
     occupations = occupations[1:]
-    
+    total = 0
+    duplicate = 0
+    added = 0
+
+    added_codes = []
+
+
+
     for occupation in occupations:
         occupation = occupation.strip().split('\t')
         uuid = occupation[5]
         onet_soc_code = occupation[1]
         title = occupation[2]
         original_title = occupation[3]
-        description = occupation[4]
+        description = str(occupation[4])
         nlp_a = occupation[6]
        
-        if title == original_title:
+        if title == original_title and uuid not in added_codes:
             job_master = JobMaster(uuid, onet_soc_code, title, original_title, description, nlp_a)
 
-            print 'Adding job ' + title
-
+            print 'Adding job ' + title + ' | ' + uuid
+            total += 1
             try:
+                added += 1
                 db.session.add(job_master)
                 db.session.commit()
+                added_codes.append(uuid)
             except:
-                print '\t ----> ' + title + " " + original_title
-                #print '\t ----> Could not add job ' + title
+                added -= 1
+                duplicate += 1
+                print 'Duplicate job ' + title + ' | ' + uuid 
+    print '\nSummary'
+    print '-------'
+    print ' Total jobs seen = ' + str(total)
+    print ' Total jobs added = ' + str(added)
+    print ' Total duplicates = ' + str(duplicate)
+    print ' Added + Duplicates = ' + str(added + duplicate)
 
 @manager.command
 def load_jobs_alternate_titles():
     """ Loads the jobs_alternate_titles table """
 
-    with open(os.path.join('tmp', 'jobs_master.tsv'), 'r') as f:
+    with open(os.path.join('tmp', 'job_titles_master_table.tsv'), 'r') as f:
         occupations = f.readlines()
 
     # dump the header
     occupations = occupations[1:]
-    created_uuids = []
-    
+    total = 0
+    duplicate = 0
+    added = 0
+    added_codes = []
+
     for occupation in occupations:
         occupation = occupation.strip().split('\t')
-        if occupation[1] == 'n/a' and occupation[2] == 'n/a':
-            onet_soc_code = str(occupation[0])
-            title = occupation[3]
-            job_title_uuid = str(hashlib.md5(title).hexdigest())
-            
-            if job_title_uuid not in created_uuids:
-                job_uuid = JobMaster.query.filter_by(onet_soc_code = onet_soc_code).first().uuid
-                if job_uuid is not None:
-                    alternate_job_title = JobAlternateTitle(job_title_uuid, title, job_uuid)
+        uuid = occupation[5]
+        onet_soc_code = occupation[1]
+        title = occupation[2]
+        original_title = occupation[3]
+        description = str(occupation[4])
+        nlp_a = occupation[6]
+        job_title_uuid = str(hashlib.md5(title).hexdigest())
+       
+        if title != original_title and job_title_uuid not in added_codes:
+            job_alternate_title = JobAlternateTitle(job_title_uuid, title, nlp_a, uuid)
 
-                    print 'Adding job title ' + title
+            print 'Adding job ' + title + ' | ' + job_title_uuid
+            total += 1
+            try:
+                added += 1
+                db.session.add(job_alternate_title)
+                db.session.commit()
+                added_codes.append(job_title_uuid)
+            except:
+                added -= 1
+                duplicate += 1
+                print 'Duplicate job ' + title + ' | ' + job_title_uuid 
+    print '\nSummary'
+    print '-------'
+    print ' Total jobs seen = ' + str(total)
+    print ' Total jobs added = ' + str(added)
+    print ' Total duplicates = ' + str(duplicate)
+    print ' Added + Duplicates = ' + str(added + duplicate)
 
-                try:
-                    db.session.add(alternate_job_title)
-                    db.session.commit()
-                    created_uuids.append(job_title_uuid)
-                except:
-                    print '\t ----> Could not add job title' + title
-            else:
-                print 'Could not find job for title ' + title
 @manager.command
 def load_skills_related():
     """ Loads the skills_related table """

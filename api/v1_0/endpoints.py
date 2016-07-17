@@ -43,6 +43,7 @@ class AllJobsEndpoint(Resource):
                 job_response['onet_soc_code'] = job.onet_soc_code
                 job_response['title'] = job.title
                 job_response['description'] = job.description
+                job_response['nlp_a'] = job.nlp_a
                 all_jobs.append(job_response)
         
             return create_response(all_jobs, 200)
@@ -692,3 +693,35 @@ class SkillNameAndFrequencyEndpoint(Resource):
                 output['count'] = result.count
               
                 return create_response(output, 200)
+
+class AllUnusualJobsEndpoint(Resource):
+    @swagger.operation(
+        description = "Retrieve All Unusual Job Titles",
+        summary = "Retrieve the names and UUIDs of all unusual job titles",
+        notes = "This endpoint is used primarily for testing, since  this data has not been officially compiled as yet",
+        responseMessages = [
+            {
+                "code" : 200,
+                "message" : "Successfully found a collection of unusual job titles."
+            },
+            {
+                "code" : 404,
+                "message" : "Unable to find any unusual job titles."
+            }
+        ]
+    )
+    def get(self):
+        all_jobs = []
+        jobs = JobUnusualTitle.query.order_by(JobUnusualTitle.title.asc()).all()
+        if jobs is not None:
+            for job in jobs:
+                job_response = OrderedDict()
+                job_response['uuid'] = job.uuid
+                job_response['title'] = job.title
+                job_response['description'] = job.description
+                job_response['job_uuid'] = job.job_uuid
+                all_jobs.append(job_response)
+        
+            return create_response(all_jobs, 200)
+        else:
+            return create_error({'message':'No jobs were found'}, 404)

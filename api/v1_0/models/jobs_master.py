@@ -16,6 +16,8 @@ class JobMaster(db.Model):
     original_title = db.Column(db.String)
     description = db.Column(db.String)
     nlp_a = db.Column(db.String)
+    alternate_titles = db.relationship('JobAlternateTitle', backref='job', lazy='dynamic')
+    unusual_titles = db.relationship('JobUnusualTitle', backref='job', lazy='dynamic')
 
     def __init__(self, uuid, onet_soc_code, title, original_title, description, nlp_a):
         self.uuid = uuid
