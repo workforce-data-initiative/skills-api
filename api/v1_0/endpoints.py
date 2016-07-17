@@ -561,8 +561,8 @@ class AssociatedJobsForJobEndpoint(Resource):
                 result = JobAlternateTitle.query.filter_by(uuid = id).first()
                 if result is None:
                     result = JobUnusualTitle.query.filter_by(uuid = id).first()
-                    if result is None:
-                        parent_uuid = result.job_id
+                    if result is not None:
+                        parent_uuid = result.job_uuid
                     else:
                         return create_error({'message': 'No job found matching the specified uuid ' + id}, 404)
                 else:
@@ -580,6 +580,7 @@ class AssociatedJobsForJobEndpoint(Resource):
                 title = OrderedDict()
                 title['uuid'] = alt_title.uuid
                 title['title'] = alt_title.title
+                title['parent_uuid'] = parent_uuid
                 output['related_job_titles'].append(title)
                 
             # unusual job titles
@@ -588,6 +589,7 @@ class AssociatedJobsForJobEndpoint(Resource):
                 title = OrderedDict()
                 title['uuid'] = other_title.uuid
                 title['title'] = other_title.title
+                title['parent_uuid'] = parent_uuid
                 output['unusual_job_titles'].append(title)
 
             
