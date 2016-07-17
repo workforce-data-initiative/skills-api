@@ -244,7 +244,7 @@ class SkillNameAutocompleteEndpoint(Resource):
                 return create_error({'message': 'No skill name suggestions found'}, 404)                
 
             for result in results:
-                suggestion = {}
+                suggestion = OrderedDict()
                 suggestion['suggestion'] = result.skill_name
                 suggestion['uuid'] = result.uuid
                 all_suggestions.append(suggestion)
@@ -438,9 +438,9 @@ class NormalizeSkillNameEndpoint(Resource):
                 return create_error({'message': 'No normalized skill names found'}, 404)                
 
             for result in results:
-                suggestion = {}
-                suggestion['skill_name'] = result.skill_name
+                suggestion = OrderedDict()
                 suggestion['uuid'] = result.uuid
+                suggestion['skill_name'] = result.skill_name
                 all_suggestions.append(suggestion)
 
             return create_response(all_suggestions, 200)
@@ -475,11 +475,11 @@ class AssociatedSkillsForJobEndpoint(Resource):
         if id is not None:
             results = JobSkill.query.filter_by(job_uuid = id).all()
             if len(results) > 0:
-                all_skills = {}
+                all_skills = OrderedDict()
                 all_skills['job_uuid'] = id
                 all_skills['skills'] = []
                 for result in results:
-                    skill ={}
+                    skill = OrderedDict()
                     skill['skill_uuid'] = result.skill_uuid
                     all_skills['skills'].append(skill)
                 return create_response(all_skills, 200)
@@ -516,11 +516,11 @@ class AssociatedJobsForSkillEndpoint(Resource):
         if id is not None:
             results = JobSkill.query.filter_by(skill_uuid = id).all()
             if len(results) > 0:
-                all_jobs = {}
+                all_jobs = OrderedDict()
                 all_jobs['skill_uuid'] = id
                 all_jobs['jobs'] = []
                 for result in results:
-                    job ={}
+                    job = OrderedDict()
                     job['job_uuid'] = result.job_uuid
                     all_jobs['jobs'].append(job)
                 return create_response(all_jobs, 200)
@@ -623,7 +623,7 @@ class AssociatedSkillForSkillEndpoint(Resource):
         if id is not None:
             result = SkillMaster.query.filter_by(uuid = id).first()
             if result is not None:
-                all_skills = {}
+                all_skills = OrderedDict()
                 skills = SkillMaster.query.filter(SkillMaster.skill_name.contains(result.skill_name)).all()
                 if len(skills) > 0:
                     all_skills['skills'] = []
@@ -666,7 +666,7 @@ class SkillNameAndFrequencyEndpoint(Resource):
         if id is not None:
             result = SkillMaster.query.filter_by(uuid = id).first()
             if result is None:
-                all_skills = {}
+                all_skills = OrderedDict()
                 job = JobMaster.query.filter_by(onet_soc_code = id).first()
                 if job is not None:
                     search_uuid = job.uuid
