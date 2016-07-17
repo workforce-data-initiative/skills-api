@@ -31,42 +31,46 @@ manager.add_command('db', MigrateCommand)
 def load_skills_master():
     """ Loads the skills_master table """
 
-    with open(os.path.join('tmp', 'skills_master.tsv'), 'r') as f:
+    with open(os.path.join('tmp', 'skills_master_table.tsv'), 'r') as f:
         skills = f.readlines()
 
     # dump the header
     skills = skills[1:]
-    
-    # collect unique skills from list of skills
-    visited_skills = []
-    count = 0
+    total = 0
+    duplicate = 0
+    added = 0
+
+    added_codes = []
 
     for skill in skills:
         skill = skill.strip().split('\t')
-        if str(skill[2]) not in visited_skills:
-            onet_soc_code = str(skill[0])
-            onet_element_id = str(skill[1])
-            skill_name = str(skill[2])
-            skill_count = int(skill[3])
-            skill_uuid = str(hashlib.md5(skill_name).hexdigest())
+        #uuid = skill[5]
+        skill_name = skill[3]
+        uuid = str(hashlib.md5(skill_name).hexdigest())
+        onet_element_id = skill[2]
+        description = skill[4]
+        nlp_a = skill[6]
+       
+        if uuid not in added_codes:
+            skill_master = SkillMaster(uuid, skill_name, onet_element_id, description, nlp_a)
 
-            if (SkillMaster.query.filter_by(skill_name = skill_name).count() == 0):
-                skills_master = SkillMaster(skill_uuid, onet_soc_code, \
-                        onet_element_id, skill_name, skill_count)
-
-                print 'Adding skill ' + skill_name
-
-                try:
-                    db.session.add(skills_master)
-                    db.session.commit()
-                    count += 1
-                    visited_skills.append(skill_name)
-                except:
-                    print '\t ----> Could not add skill ' + skill_name
-            else:
-                print 'Skipping ' + skill_name
-                visited_skills.append(skill_name)
-
+            print 'Adding skill ' + skill_name + ' | ' + uuid
+            total += 1
+            try:
+                added += 1
+                db.session.add(skill_master)
+                db.session.commit()
+                added_codes.append(uuid)
+            except:
+                added -= 1
+                duplicate += 1
+                print '\t ---> Duplicate skill ' + skill_name + ' | ' + uuid 
+    print '\nSummary'
+    print '-------'
+    print ' Total skills seen = ' + str(total)
+    print ' Total skills added = ' + str(added)
+    print ' Total duplicates = ' + str(duplicate)
+    print ' Added + Duplicates = ' + str(added + duplicate)
 
 @manager.command
 def load_jobs_master():

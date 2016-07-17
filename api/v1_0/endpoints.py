@@ -143,23 +143,24 @@ class JobTitleAutocompleteEndpoint(Resource):
 
             search_string = search_string.replace('"','').strip()
             all_suggestions = []
-           
+
             if query_mode == 'begins_with':
-                results = JobAlternateTitle.query.filter(JobAlternateTitle.title.startswith(search_string)).all()
+                results = JobAlternateTitle.query.filter(JobAlternateTitle.nlp_a.startswith(search_string.lower())).all()
 
             if query_mode == 'contains':
-                results = JobAlternateTitle.query.filter(JobAlternateTitle.title.contains(search_string)).all()
+                results = JobAlternateTitle.query.filter(JobAlternateTitle.nlp_a.contains(search_string.lower())).all()
 
             if query_mode == 'ends_with':
-                results = JobAlternateTitle.query.filter(JobAlternateTitle.title.endswith(search_string)).all()
+                results = JobAlternateTitle.query.filter(JobAlternateTitle.nlp_a.endswith(search_string.lower())).all()
 
             if len(results) == 0:
                 return create_error({'message': 'No job title suggestions found'}, 404)                
 
             for result in results:
-                suggestion = {}
-                suggestion['suggestion'] = result.title
+                suggestion = OrderedDict()
                 suggestion['uuid'] = result.uuid
+                suggestion['suggestion'] = result.title
+                suggestion['nlp_a'] = result.nlp_a
                 suggestion['parent_uuid'] = result.job_uuid
                 all_suggestions.append(suggestion)
 
