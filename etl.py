@@ -172,7 +172,7 @@ def load_skills_related():
 def load_jobs_skills():
     """ Loads the jobs_skills table """
 
-    with open(os.path.join('tmp', 'skills_master.tsv'), 'r') as f:
+    with open(os.path.join('tmp', 'skills_master_table.tsv'), 'r') as f:
         skills = f.readlines()
 
     # dump the header
@@ -180,10 +180,8 @@ def load_jobs_skills():
     
     for skill in skills:
         skill = skill.strip().split('\t')
-        onet_soc_code = str(skill[0])
-        onet_element_id = str(skill[1])
-        skill_name = str(skill[2])
-        skill_count = int(skill[3])
+        onet_soc_code = str(skill[1])
+        skill_name = str(skill[3])
         
         skill_uuid = SkillMaster.query.filter_by(skill_name = skill_name).first().uuid
         job_uuid = JobMaster.query.filter_by(onet_soc_code = onet_soc_code).first().uuid

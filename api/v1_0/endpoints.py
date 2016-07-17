@@ -21,7 +21,7 @@ class AllJobsEndpoint(Resource):
     @swagger.operation(
         description = "Retrieve All Jobs",
         summary = "Retrieve the names and UUIDs of all jobs",
-        notes = "The job collection is huge and may take a while before the API call returns the full dataset.",
+        notes = "The job collection is huge and may take a while before the API call returns the full dataset and may crash this interface.",
         responseMessages = [
             {
                 "code" : 200,
@@ -54,7 +54,7 @@ class AllSkillsEndpoint(Resource):
     @swagger.operation(
         description = "Retrieve All Skills",
         summary = "Retrieve the names and UUIDs of all skills",
-        notes = "The skill collection is huge and may take a while before the API call returns the full dataset.",
+        notes = "The skill collection is huge and may be slow. For this reason, the endpoint is temporarily limited to 2500 results.",
         responseMessages = [
             {
                 "code" : 200,
@@ -68,13 +68,15 @@ class AllSkillsEndpoint(Resource):
     )
     def get(self):
         all_skills = []
-        skills = SkillMaster.query.order_by(SkillMaster.count.desc()).all()
+        skills = SkillMaster.query.order_by(SkillMaster.skill_name.asc()).limit(2500).all()
         if skills is not None:
             for skill in skills:
                 skill_response = OrderedDict()
                 skill_response['uuid'] = skill.uuid
                 skill_response['name'] = skill.skill_name
-                skill_response['count'] = skill.count
+                skill_response['description'] = skill.description
+                skill_response['onet_element_id'] = skill.onet_element_id
+                skill_response['nlp_a'] = skill.nlp_a
                 all_skills.append(skill_response)
         
             return create_response(all_skills, 200)
@@ -232,21 +234,22 @@ class SkillNameAutocompleteEndpoint(Resource):
             all_suggestions = []
            
             if query_mode == 'begins_with':
-                results = SkillMaster.query.filter(SkillMaster.skill_name.startswith(search_string)).all()
+                results = SkillMaster.query.filter(SkillMaster.nlp_a.startswith(search_string.lower())).all()
 
             if query_mode == 'contains':
-                results = SkillMaster.query.filter(SkillMaster.skill_name.contains(search_string)).all()
+                results = SkillMaster.query.filter(SkillMaster.nlp_a.contains(search_string.lower())).all()
 
             if query_mode == 'ends_with':
-                results = SkillMaster.query.filter(SkillMaster.skill_name.endswith(search_string)).all()
+                results = SkillMaster.query.filter(SkillMaster.nlp_a.endswith(search_string.lower())).all()
 
             if len(results) == 0:
                 return create_error({'message': 'No skill name suggestions found'}, 404)                
 
             for result in results:
                 suggestion = OrderedDict()
-                suggestion['suggestion'] = result.skill_name
                 suggestion['uuid'] = result.uuid
+                suggestion['suggestion'] = result.skill_name
+                suggestion['nlp_a'] = result.nlp_a
                 all_suggestions.append(suggestion)
 
             return create_response(all_suggestions, 200)
@@ -395,7 +398,7 @@ class NormalizeSkillNameEndpoint(Resource):
     @swagger.operation(
         description = "Normalize Skill Name",
         summary = "Retrieve the canonical skill name for a synonymous skill name",
-        notes = "Append the parameter skill_name to the request URL (may be a partial or complete skill name).",
+        notes = "Append the parameter skill_name to the request URL (may be a partial or complete skill name). Not enough data yet to implement a more sophisticated query.",
         parameters = [
             {
                 "name": "skill_name",
@@ -476,11 +479,18 @@ class AssociatedSkillsForJobEndpoint(Resource):
             results = JobSkill.query.filter_by(job_uuid = id).all()
             if len(results) > 0:
                 all_skills = OrderedDict()
+                job = JobMaster.query.filter_by(uuid = id).first()
                 all_skills['job_uuid'] = id
+                all_skills['job_title'] = job.title
+                all_skills['nlp_a'] = job.nlp_a
                 all_skills['skills'] = []
                 for result in results:
                     skill = OrderedDict()
+                    skill_desc = SkillMaster.query.filter_by(uuid = result.skill_uuid).first()
                     skill['skill_uuid'] = result.skill_uuid
+                    skill['skill_name'] = skill_desc.skill_name
+                    skill['description'] = skill_desc.description
+                    skill['nlp_a'] = skill_desc.nlp_a
                     all_skills['skills'].append(skill)
                 return create_response(all_skills, 200)
             else:
@@ -517,11 +527,17 @@ class AssociatedJobsForSkillEndpoint(Resource):
             results = JobSkill.query.filter_by(skill_uuid = id).all()
             if len(results) > 0:
                 all_jobs = OrderedDict()
+                skill = SkillMaster.query.filter_by(uuid = id).first()
                 all_jobs['skill_uuid'] = id
+                all_jobs['skill_name'] = skill.skill_name
+                all_jobs['nlp_a'] = skill.nlp_a
                 all_jobs['jobs'] = []
                 for result in results:
                     job = OrderedDict()
+                    job_desc = JobMaster.query.filter_by(uuid = result.job_uuid).first()
                     job['job_uuid'] = result.job_uuid
+                    job['job_title'] = job_desc.title
+                    job['nlp_a'] = job_desc.nlp_a
                     all_jobs['jobs'].append(job)
                 return create_response(all_jobs, 200)
             else:
@@ -631,8 +647,9 @@ class AssociatedSkillForSkillEndpoint(Resource):
                     all_skills['skills'] = []
                     for skill in skills:
                         output = OrderedDict()
-                        output['skill_uuid'] = skill.uuid
+                        output['uuid'] = skill.uuid
                         output['skill_name'] = skill.skill_name
+                        output['nlp_a'] = skill.nlp_a
                         all_skills['skills'].append(output)
                     return create_response(all_skills, 200)
             else:
@@ -693,7 +710,8 @@ class SkillNameAndFrequencyEndpoint(Resource):
                 output = OrderedDict()
                 output['uuid'] = result.uuid
                 output['skill_name'] = result.skill_name
-                output['count'] = result.count
+                output['description'] = result.description
+                output['nlp_a'] = result.nlp_a
               
                 return create_response(output, 200)
 
