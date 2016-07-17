@@ -294,17 +294,17 @@ class JobTitleNormalizeEndpoint(Resource):
             search_string = search_string.replace('"','').strip()
             all_suggestions = []
             
-            results = JobUnusualTitle.query.filter(JobUnusualTitle.title.contains(search_string)).all()
+            results = JobUnusualTitle.query.filter(JobUnusualTitle.title.contains(search_string.lower())).all()
 
             if len(results) == 0:
                 return create_error({'message': 'No normalized job titles found'}, 404)                
 
             for result in results:
-                suggestion = {}
-                suggestion['title'] = result.title
+                suggestion = OrderedDict()
                 suggestion['uuid'] = result.uuid
-                suggestion['parent_uuid'] = result.job_uuid
+                suggestion['title'] = result.title
                 suggestion['description'] = result.description
+                suggestion['parent_uuid'] = result.job_uuid
                 all_suggestions.append(suggestion)
 
             return create_response(all_suggestions, 200)
