@@ -9,7 +9,7 @@ api.v1_0.endpoints
 from flask import abort, request
 from flask_restful import Resource
 from flask_restful_swagger import swagger
-from  common.utils import create_response, create_error 
+from  common.utils import create_response, create_error
 from . models.jobs_master import JobMaster
 from . models.skills_master import SkillMaster
 from . models.jobs_alternate_titles import JobAlternateTitle
@@ -33,6 +33,7 @@ class AllJobsEndpoint(Resource):
             }
         ]
     )
+
     def get(self):
         all_jobs = []
         jobs = JobMaster.query.order_by(JobMaster.title.asc()).all()

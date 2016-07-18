@@ -172,7 +172,7 @@ def load_skills_related():
 def load_jobs_skills():
     """ Loads the jobs_skills table """
 
-    with open(os.path.join('tmp', 'skills_master_table.tsv'), 'r') as f:
+    with open(os.path.join('tmp', 'skills_master_unique_table.tsv'), 'r') as f:
         skills = f.readlines()
 
     # dump the header

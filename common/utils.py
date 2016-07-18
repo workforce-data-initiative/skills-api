@@ -7,6 +7,7 @@ common.utils
 """
 import re
 import json
+import functools
 from flask import request, make_response, redirect, url_for
 
 def get_api_version_custom():
@@ -32,11 +33,19 @@ def normalize_version_number(version_number):
 def create_response(data, status):
     response = make_response(json.dumps(data), status)
     response.headers['Content-Type'] = "application/json"
+    response.headers['Access-Control-Allow-Headers'] = "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
+    response.headers['Access-Control-Allow-Methods'] = "*"
+    response.headers['Access-Control-Allow-Origin'] = "*"
+
     return response
 
 def create_error(data, status):
     response = make_response(json.dumps(data), status)
     response.headers['Content-Type'] = "application/json"
+    response.headers['Access-Control-Allow-Headers'] = "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
+    response.headers['Access-Control-Allow-Methods'] = "*"
+    response.headers['Access-Control-Allow-Origin'] = "*"
+
     return response
 
 def route_api(endpoint_class, id=None):
