@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-api.version.v1_0.models.jobs_alternate_titles
+api.version.v1.models.jobs_alternate_titles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 

@@ -9,6 +9,7 @@ import re
 import json
 import functools
 from flask import request, make_response, redirect, url_for
+from collections import OrderedDict
 
 def get_api_version_custom():
     return request.headers.get('api-version')
@@ -40,7 +41,11 @@ def create_response(data, status):
     return response
 
 def create_error(data, status):
-    response = make_response(json.dumps(data), status)
+    response_obj = {}
+    response_obj['error'] = OrderedDict()
+    response_obj['error']['code'] = status
+    response_obj['error']['message'] = data
+    response = make_response(json.dumps(response_obj), status)
     response.headers['Content-Type'] = "application/json"
     response.headers['Access-Control-Allow-Headers'] = "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
     response.headers['Access-Control-Allow-Methods'] = "*"
@@ -59,4 +64,4 @@ def route_api(endpoint_class, id=None):
             endpoint = 'api_v' + normalize_version_number(parse_version_number(api_version)) + '.' + endpoint_class
             return redirect(url_for(endpoint, id=id, **request.args))
         else:
-            return create_error({'message':'A version header is missing from the request'}, 400)
+            return create_error('A version header is missing from the request', 400)
