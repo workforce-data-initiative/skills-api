@@ -372,7 +372,7 @@
           "type" : "string",
           "description" : "Job title"
         },
-        "nlp_a" : {
+        "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized job title"
         }
@@ -394,7 +394,7 @@
           "type" : "string",
           "description" : "Title of the job associated with the UUID"
         },
-        "nlp_a" : {
+        "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized title of the job associated with the UUID"
         },
@@ -436,7 +436,7 @@
           "type" : "string",
           "description" : "Job title"
         },
-        "nlp_a" : {
+        "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized job title"
         }
@@ -492,7 +492,7 @@
           "type" : "string",
           "description" : "O*NET Element Identifier"
         },
-        "nlp_a" : {
+        "normalized_skill_name" : {
           "type" : "string",
           "description" : "Normalized skill name"
         }
@@ -526,7 +526,7 @@
           "type" : "string",
           "description" : "Title of the job associated with the UUID"
         },
-        "nlp_a" : {
+        "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized title of the job associated with the UUID"
         },
@@ -552,7 +552,7 @@
           "type" : "string",
           "description" : "Description of the skill"
         },
-        "nlp_a" : {
+        "normalized_skill_name" : {
           "type" : "string",
           "description" : "Normalized skill name"
         }
@@ -592,9 +592,6 @@
         },
         "message" : {
           "type" : "string"
-        },
-        "fields" : {
-          "type" : "object"
         }
       }
     }
