@@ -592,9 +592,6 @@
         },
         "message" : {
           "type" : "string"
-        },
-        "fields" : {
-          "type" : "object"
         }
       }
     }
