@@ -372,7 +372,7 @@
           "type" : "string",
           "description" : "Job title"
         },
-        "normalized_title" : {
+        "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized job title"
         }
