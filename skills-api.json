@@ -364,10 +364,6 @@
           "type" : "string",
           "description" : "Universally Unique Identifier for the job"
         },
-        "onet_soc_code" : {
-          "type" : "string",
-          "description" : "O*NET Standard Occupation Classification"
-        },
         "title" : {
           "type" : "string",
           "description" : "Job title"
@@ -375,6 +371,10 @@
         "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized job title"
+        },
+        "parent_uuid" : {
+          "type" : "string",
+          "description" : "UUID for the job's parent job category"
         }
       }
     },
