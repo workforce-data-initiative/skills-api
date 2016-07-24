@@ -374,12 +374,12 @@
     }
   },
   "definitions" : {
-    "properties" : {
-      "jobs" : {
-        "type" : "array",
-        "items" : {
-          "$ref" : "#/definitions/Job"
-        },
+    "Jobs" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/Job"
+      },
+      "properties" : {
         "links" : {
           "type" : "array",
           "items" : {
