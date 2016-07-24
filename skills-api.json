@@ -379,7 +379,7 @@
       "items" : {
         "$ref" : "#/definitions/Job"
       },
-      "links" : {
+      "linkz" : {
         "type" : "array",
         "items" : {
           "$ref" : "#/definitions/PageLink"
