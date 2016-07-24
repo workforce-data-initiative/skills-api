@@ -626,16 +626,6 @@
         }
       }
     },
-    "PageLinks" : {
-      "properties" : {
-        "links" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/PageLink"
-          }
-        }
-      }
-    },
     "Error" : {
       "properties" : {
         "code" : {
