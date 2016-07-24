@@ -204,6 +204,17 @@
       "get" : {
         "summary" : "Skill Names and Descriptions",
         "description" : "Retrieve the names, descriptions, and UUIDs of all skills.",
+        "parameters" : [ {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "Pagination offset. Default is 0.",
+          "type" : "integer"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Maximum number of items per page. Default is 20 and cannot exceed 500.",
+          "type" : "integer"
+        } ],
         "responses" : {
           "200" : {
             "description" : "A collection of skills",
