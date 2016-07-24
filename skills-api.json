@@ -18,6 +18,12 @@
       "get" : {
         "summary" : "Job Titles and Descriptions",
         "description" : "Retrieves the names, descriptions, and UUIDs of all job titles.",
+        "parameters" : [ {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "Pagination offset",
+          "type" : "int"
+        } ],
         "responses" : {
           "200" : {
             "description" : "A collection of jobs",
