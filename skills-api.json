@@ -378,6 +378,9 @@
       "type" : "array",
       "items" : {
         "$ref" : "#/definitions/Job"
+      },
+      "links" : {
+        "$ref" : "#/definitions/PageLinks"
       }
     },
     "Job" : {
@@ -603,6 +606,28 @@
         "skill_name" : {
           "type" : "string",
           "description" : "Skill name"
+        }
+      }
+    },
+    "PageLink" : {
+      "properties" : {
+        "rel" : {
+          "type" : "string",
+          "description" : "Link descriptor (e.g. self, first, prev, next, last)"
+        },
+        "href" : {
+          "type" : "string",
+          "description" : "Link URI"
+        }
+      }
+    },
+    "PageLinks" : {
+      "properties" : {
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PageLink"
+          }
         }
       }
     },
