@@ -377,13 +377,7 @@
     "Jobs" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/definitions/Job"
-      },
-      "linkz" : {
-        "type" : "array",
-        "items" : {
-          "$ref" : "#/definitions/PageLink"
-        }
+        "$ref" : "#/definitions/PageLinks"
       }
     },
     "Job" : {
