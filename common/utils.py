@@ -31,12 +31,17 @@ def parse_version_number(header):
 def normalize_version_number(version_number):
     return version_number.replace('.', '_') 
 
-def create_response(data, status):
+def create_response(data, status, custom_headers=None):
     response = make_response(json.dumps(data), status)
     response.headers['Content-Type'] = "application/json"
     response.headers['Access-Control-Allow-Headers'] = "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
     response.headers['Access-Control-Allow-Methods'] = "*"
     response.headers['Access-Control-Allow-Origin'] = "*"
+
+    if custom_headers is not None:
+        for custom_header in custom_headers:
+            header = custom_header.strip().split('=')
+            response.headers[header[0]] = header[1]
 
     return response
 

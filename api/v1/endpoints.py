@@ -6,6 +6,8 @@ api.v1_0.endpoints
 
 """
 
+import math
+import json
 from flask import abort, request
 from flask_restful import Resource
 from  common.utils import create_response, create_error
@@ -16,29 +18,174 @@ from . models.jobs_unusual_titles import JobUnusualTitle
 from . models.jobs_skills import JobSkill
 from collections import OrderedDict
 
+def compute_offset(page, items_per_page):
+    return (page - 1) * items_per_page
+
+def compute_page(offset, items_per_page):
+    return int(math.ceil(offset / items_per_page)) + 1
+
+
 class AllJobsEndpoint(Resource):
     def get(self):
+        args = request.args
+
+        if args is not None:
+            if 'offset' in args.keys():
+                try:
+                    offset = int(args['offset'])
+                    if offset < 0:
+                        return create_error('Offset must be a positive integer.', 400)                        
+                except:
+                    return create_error('Offset must be an integer.', 400)                    
+            else:
+                offset = 0
+
+            if 'limit' in args.keys():
+                try:
+                    limit = int(args['limit'])
+                    if limit < 0:
+                        return create_error('Limit must be a positive integer.', 400)
+                except:
+                    return create_error('Limit must be an integer', 400)
+            else:
+                limit = 20
+        else:
+            offset = 0
+            limit = 20
+        
+        if limit > 500:
+            limit = 500
+
         all_jobs = []
-        #jobs = JobMaster.query.order_by(JobMaster.title.asc()).all()
-        jobs = JobAlternateTitle.query.order_by(JobAlternateTitle.title.asc()).all()
+        links = OrderedDict()
+        links['links'] = []
+        jobs = JobAlternateTitle.query.order_by(JobAlternateTitle.title.asc()).limit(limit).offset(offset)
+        rows = JobAlternateTitle.query.count()
+
+        # compute pages
+        url_link = '/jobs?offset={}&limit={}'
+        custom_headers = []
+        custom_headers.append('X-Total-Count = ' + str(rows))
+
+        total_pages = int(math.ceil(rows / limit))
+        current_page = compute_page(offset, limit)
+        first = OrderedDict()
+        prev = OrderedDict()
+        next = OrderedDict()
+        last = OrderedDict()
+        current = OrderedDict()
+
+        current['rel'] = 'self'
+        current['href'] = url_link.format(str(offset), str(limit))
+        links['links'].append(current)
+        
+        first['rel'] = 'first'
+        first['href'] = url_link.format(str(compute_offset(1, limit)), str(limit))
+        links['links'].append(first)
+        
+        if current_page > 1:
+            prev['rel'] = 'prev'
+            first['href'] = url_link.format(str(compute_offset(current_page - 1, limit)), str(limit))
+            links['links'].append(prev)
+
+        if current_page < total_pages:
+            next['rel'] = 'next'
+            next['href'] = url_link.format(str(compute_offset(current_page + 1, limit)), str(limit))
+            links['links'].append(next)
+
+        last['rel'] = 'last'
+        last['href'] = url_link.format(str(compute_offset(total_pages, limit)), str(limit)) 
+        links['links'].append(last)
+
         if jobs is not None:
             for job in jobs:
                 job_response = OrderedDict()
                 job_response['uuid'] = job.uuid
-                #job_response['onet_soc_code'] = job.onet_soc_code
                 job_response['title'] = job.title
-                #job_response['description'] = job.description
                 job_response['normalized_job_title'] = job.nlp_a
+                job_response['parent_uuid'] = job.job_uuid
                 all_jobs.append(job_response)
+            
+            all_jobs.append(links)
         
-            return create_response(all_jobs, 200)
+            return create_response(all_jobs, 200, custom_headers)
         else:
             return create_error('No jobs were found', 404)
 
 class AllSkillsEndpoint(Resource):
     def get(self):
+        args = request.args
+
+        if args is not None:
+            if 'offset' in args.keys():
+                try:
+                    offset = int(args['offset'])
+                    if offset < 0:
+                        return create_error('Offset must be a positive integer.', 400)                        
+                except:
+                    return create_error('Offset must be an integer.', 400)                    
+            else:
+                offset = 0
+
+            if 'limit' in args.keys():
+                try:
+                    limit = int(args['limit'])
+                    if limit < 0:
+                        return create_error('Limit must be a positive integer.', 400)
+                except:
+                    return create_error('Limit must be an integer', 400)
+            else:
+                limit = 20
+        else:
+            offset = 0
+            limit = 20
+        
+        if limit > 500:
+            limit = 500
+
         all_skills = []
-        skills = SkillMaster.query.order_by(SkillMaster.skill_name.asc()).limit(2500).all()
+        links = OrderedDict()
+        links['links'] = []
+
+        skills = SkillMaster.query.order_by(SkillMaster.skill_name.asc()).limit(limit).offset(offset)
+        rows = SkillMaster.query.count()
+
+        # compute pages
+        url_link = '/skills?offset={}&limit={}'
+        custom_headers = []
+        custom_headers.append('X-Total-Count = ' + str(rows))
+
+        total_pages = int(math.ceil(rows / limit))
+        current_page = compute_page(offset, limit)
+        first = OrderedDict()
+        prev = OrderedDict()
+        next = OrderedDict()
+        last = OrderedDict()
+        current = OrderedDict()
+
+        current['rel'] = 'self'
+        current['href'] = url_link.format(str(offset), str(limit))
+        links['links'].append(current)
+        
+        first['rel'] = 'first'
+        first['href'] = url_link.format(str(compute_offset(1, limit)), str(limit))
+        links['links'].append(first)
+        
+        if current_page > 1:
+            prev['rel'] = 'prev'
+            first['href'] = url_link.format(str(compute_offset(current_page - 1, limit)), str(limit))
+            links['links'].append(prev)
+
+        if current_page < total_pages:
+            next['rel'] = 'next'
+            next['href'] = url_link.format(str(compute_offset(current_page + 1, limit)), str(limit))
+            links['links'].append(next)
+
+        last['rel'] = 'last'
+        last['href'] = url_link.format(str(compute_offset(total_pages, limit)), str(limit)) 
+        links['links'].append(last)
+
+
         if skills is not None:
             for skill in skills:
                 skill_response = OrderedDict()
@@ -48,6 +195,7 @@ class AllSkillsEndpoint(Resource):
                 skill_response['onet_element_id'] = skill.onet_element_id
                 skill_response['normalized_skill_name'] = skill.nlp_a
                 all_skills.append(skill_response)
+            all_skills.append(links)
         
             return create_response(all_skills, 200)
         else:
