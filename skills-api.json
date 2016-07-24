@@ -380,7 +380,10 @@
         "$ref" : "#/definitions/Job"
       },
       "links" : {
-        "$ref" : "#/definitions/PageLinks"
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/definitions/PageLink"
+        }
       }
     },
     "Job" : {
