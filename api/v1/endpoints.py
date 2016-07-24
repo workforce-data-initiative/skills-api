@@ -334,6 +334,7 @@ class JobTitleFromONetCodeEndpoint(Resource):
                     output = OrderedDict()
                     output['uuid'] = result.uuid
                     output['title'] = result.title
+                    output['normalized_job_title'] = result.nlp_a
                     output['parent_uuid'] = result.job_uuid
                     return create_response(output, 200)
                 else:
@@ -342,7 +343,7 @@ class JobTitleFromONetCodeEndpoint(Resource):
                         output = OrderedDict()
                         output['uuid'] = result.uuid
                         output['title'] = result.title
-                        output['description'] = result.description
+                        output['normalized_job_title'] = result.title
                         output['parent_uuid'] = result.job_uuid
                         return create_response(output, 200)
                     else:
