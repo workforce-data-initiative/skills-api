@@ -22,7 +22,12 @@
           "name" : "offset",
           "in" : "query",
           "description" : "Pagination offset",
-          "type" : "int"
+          "type" : "integer"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Maximum number of items per page",
+          "type" : "integer"
         } ],
         "responses" : {
           "200" : {
