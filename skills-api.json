@@ -21,12 +21,12 @@
         "parameters" : [ {
           "name" : "offset",
           "in" : "query",
-          "description" : "Pagination offset",
+          "description" : "Pagination offset. Default is 0.",
           "type" : "integer"
         }, {
           "name" : "limit",
           "in" : "query",
-          "description" : "Maximum number of items per page",
+          "description" : "Maximum number of items per page. Default is 20 and cannot exceed 500.",
           "type" : "integer"
         } ],
         "responses" : {
