@@ -197,7 +197,7 @@ class AllSkillsEndpoint(Resource):
                 all_skills.append(skill_response)
             all_skills.append(links)
         
-            return create_response(all_skills, 200)
+            return create_response(all_skills, 200, custom_headers)
         else:
             return create_error('No skills were found', 404)
 
