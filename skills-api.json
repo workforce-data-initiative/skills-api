@@ -12,6 +12,7 @@
   "host" : "52.12.156.193",
   "schemes" : [ "http" ],
   "basePath" : "/v1",
+  "accepts" : [ "application/json" ],
   "produces" : [ "application/json" ],
   "paths" : {
     "/jobs" : {
