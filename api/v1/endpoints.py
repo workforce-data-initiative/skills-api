@@ -409,9 +409,22 @@ class AssociatedSkillsForJobEndpoint(Resource):
     def get(self, id=None):
         if id is not None:
             results = JobSkill.query.filter_by(job_uuid = id).all()
+            job = JobMaster.query.filter_by(uuid = id).first()
+            if not results:
+                parent_uuid = None
+                job = JobAlternateTitle.query.filter_by(uuid = id).first()
+                if job:
+                    parent_uuid = job.job_uuid
+                else:
+                    job = JobUnusualTitle.query.filter_by(uuid = id).first()
+                    if job:
+                        parent_uuid = job.job_uuid
+                
+                if parent_uuid is not None:
+                    results = JobSkill.query.filter_by(job_uuid = parent_uuid).all()
+                    
             if len(results) > 0:
                 all_skills = OrderedDict()
-                job = JobMaster.query.filter_by(uuid = id).first()
                 all_skills['job_uuid'] = id
                 all_skills['job_title'] = job.title
                 all_skills['normalized_job_title'] = job.nlp_a
