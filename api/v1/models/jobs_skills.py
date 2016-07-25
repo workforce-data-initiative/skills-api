@@ -18,4 +18,4 @@ class JobSkill(db.Model):
         self.skill_uuid = skill_uuid
 
     def __repr__(self):
-        return '<uuid {}>'.format(self.uuid)
+        return '<uuid {}>'.format(self.job_uuid)

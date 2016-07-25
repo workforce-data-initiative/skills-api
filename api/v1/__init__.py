@@ -8,7 +8,7 @@ api.v1_0
 from flask import Blueprint
 from flask_restful import Api
 
-api_bp = Blueprint('api_v1_0', __name__)
+api_bp = Blueprint('api_v1', __name__)
 api = Api(api_bp)
 
 from . models.skills_master import SkillMaster
@@ -26,6 +26,7 @@ api.add_resource(AllSkillsEndpoint, '/skills')
 api.add_resource(JobTitleAutocompleteEndpoint, '/jobs/autocomplete')
 api.add_resource(SkillNameAutocompleteEndpoint, '/skills/autocomplete')
 api.add_resource(JobTitleNormalizeEndpoint, '/jobs/normalize')
+api.add_resource(AllUnusualJobsEndpoint, '/jobs/unusual_titles')
 api.add_resource(NormalizeSkillNameEndpoint, '/skills/normalize')
 api.add_resource(JobTitleFromONetCodeEndpoint, '/jobs/<string:id>')
 api.add_resource(SkillNameAndFrequencyEndpoint, '/skills/<string:id>')

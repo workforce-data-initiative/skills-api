@@ -3,5 +3,9 @@
 venv/
 config/
 zappa_settings.json
+create-login-profile.json
 tmp/
-config.dev
+config.*
+*.txt
+*.zip
+*.sql
