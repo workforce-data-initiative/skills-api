@@ -9,7 +9,7 @@
       "url" : "http://www.dataatwork.org"
     }
   },
-  "host" : "52.12.156.193",
+  "host" : "http://52.12.156.193",
   "schemes" : [ "http" ],
   "basePath" : "/v1",
   "produces" : [ "application/json" ],
