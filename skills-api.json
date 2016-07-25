@@ -9,8 +9,8 @@
       "url" : "http://www.dataatwork.org"
     }
   },
-  "host" : "api.dataatwork.org",
-  "schemes" : [ "https" ],
+  "host" : "52.12.156.193",
+  "schemes" : [ "http" ],
   "basePath" : "/v1",
   "produces" : [ "application/json" ],
   "paths" : {
