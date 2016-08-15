@@ -84,6 +84,19 @@ class JobTitleNormalizeEndpoint(Resource):
         return route_api('jobtitlenormalizeendpoint')
 
 
+class AllUnusualJobsEndpoint(Resource):
+    """All Unusual Jobs Endpoint Class"""
+
+    def get(self):
+        """GET operation for the endpoint class.
+
+        Returns: 
+            A redirect to the appropriate API version as specified by the 
+            accept or custom header.
+
+        """
+        return route_api('allunusualjobsendpoint')
+
 class JobTitleFromONetCodeEndpoint(Resource):
     """Job Title From O*NET SOC Code Endpoint Class"""
 

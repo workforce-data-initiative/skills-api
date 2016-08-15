@@ -23,3 +23,6 @@ class JobUnusualTitle(db.Model):
 
     def __repr__(self):
         return '<uuid {}>'.format(self.uuid)
+
+    def find_all(self):
+        return self.query.order_by(self.title.asc()).all()

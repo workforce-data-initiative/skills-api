@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""
-api.v1_0
-~~~~~~~~
+"""API Version 1
+
+This package contains all the endpoints and data models for the version 1 API.
+
 """
 
 from flask import Blueprint
@@ -20,7 +21,9 @@ from . models.jobs_skills import JobSkill
 
 from . endpoints import *
 
-# endpoints go here
+# ------------------------------------------------------------------------
+# API Version 1 Endpoints 
+# ------------------------------------------------------------------------
 api.add_resource(AllJobsEndpoint, '/jobs')
 api.add_resource(AllSkillsEndpoint, '/skills')
 api.add_resource(JobTitleAutocompleteEndpoint, '/jobs/autocomplete')
