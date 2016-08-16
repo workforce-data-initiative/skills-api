@@ -138,7 +138,7 @@ class AllJobsEndpoint(Resource):
         
         if current_page > 1:
             prev['rel'] = 'prev'
-            first['href'] = url_link.format(str(compute_offset(current_page - 1, limit)), str(limit))
+            prev['href'] = url_link.format(str(compute_offset(current_page - 1, limit)), str(limit))
             links['links'].append(prev)
 
         if current_page < total_pages:
@@ -211,7 +211,7 @@ class AllSkillsEndpoint(Resource):
         
         if current_page > 1:
             prev['rel'] = 'prev'
-            first['href'] = url_link.format(str(compute_offset(current_page - 1, limit)), str(limit))
+            prev['href'] = url_link.format(str(compute_offset(current_page - 1, limit)), str(limit))
             links['links'].append(prev)
 
         if current_page < total_pages:
