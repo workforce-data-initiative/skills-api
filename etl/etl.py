@@ -11,7 +11,8 @@ JOBS_MASTER = 'jobs_master.tsv'
 JOBS_TITLES = 'jobs_titles.tsv'
 SKILLS_IMPORTANCE = 'skills_importance.tsv'
 SKILLS_MASTER = 'skills_master.tsv'
-JOBS_SKILLS = 'jobs_skills.tsv'
+JOBS_SKILLS_COUNT = 'jobs_skills_count.tsv'
+
 
 def process_file(filepath):
     """Route a file to its appropriate processing subroutine.
@@ -110,7 +111,7 @@ def job_to_skills(filepath):
 
     """
     content = extract_data(filepath)
-    fh = open(os.path.join(os.getcwd(), 'etl', 'stage_2', JOBS_SKILLS), 'w')
+    fh = open(os.path.join(os.getcwd(), 'etl', 'stage_2', JOBS_SKILLS_COUNT), 'w')
 
     fh.write('onet_soc_code\tskill_uuid\tskill_name\tcount\n')
     for line in content:
