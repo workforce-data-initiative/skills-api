@@ -94,7 +94,7 @@ def interesting_job_titles(filepath):
 
     """
     content = extract_data(filepath, False)
-    fh = open(os.path.join(os.getcwd(), 'tmp', 'stage_2', JOBS_UNUSUAL_TITLES), 'w')
+    fh = open(os.path.join(os.getcwd(), 'etl', 'stage_2', JOBS_UNUSUAL_TITLES), 'w')
     
     fh.write('onet_soc_code\ttitle\tdescription\n')
     for line in content:
@@ -110,7 +110,7 @@ def job_to_skills(filepath):
 
     """
     content = extract_data(filepath)
-    fh = open(os.path.join(os.getcwd(), 'tmp', 'stage_2', JOBS_SKILLS), 'w')
+    fh = open(os.path.join(os.getcwd(), 'etl', 'stage_2', JOBS_SKILLS), 'w')
 
     fh.write('onet_soc_code\tskill_uuid\tskill_name\tcount\n')
     for line in content:
@@ -127,10 +127,10 @@ def job_titles(filepath):
     """
     content = extract_data(filepath)
     parent_uuid = []
-    fh = open(os.path.join(os.getcwd(), 'tmp', 'stage_2', JOBS_MASTER), 'w')
+    fh = open(os.path.join(os.getcwd(), 'etl', 'stage_2', JOBS_MASTER), 'w')
     fh.write('onet_soc_code\tcategory_title\tdescription\tcategory_uuid\n')
 
-    fh2 = open(os.path.join(os.getcwd(), 'tmp', 'stage_2', JOBS_TITLES), 'w')
+    fh2 = open(os.path.join(os.getcwd(), 'etl', 'stage_2', JOBS_TITLES), 'w')
     fh2.write('onet_soc_code\tjob_title\tjob_uuid\tcategory_uuid\n')
 
     for line in content:
@@ -156,7 +156,7 @@ def skills_importance(filepath):
 
     """
     content = extract_data(filepath)
-    fh = open(os.path.join(os.getcwd(), 'tmp', 'stage_2', SKILLS_IMPORTANCE), 'w')
+    fh = open(os.path.join(os.getcwd(), 'etl', 'stage_2', SKILLS_IMPORTANCE), 'w')
     fh.write('onet_soc_code\tskill_uuid\timportance_value\timportance_n' + \
                 '\timportance_stderr\timportance_lower_ci\timportance_upper_ci\t' + \
                 'level_value\tlevel_n\tlevel_stderr\tlevel_lower_ci\tlevel_upper_ci\n')
@@ -186,11 +186,11 @@ def skills(filepath):
 
     """
     content = extract_data(filepath)
-    fh = open(os.path.join(os.getcwd(), 'tmp', 'stage_2', SKILLS_MASTER), 'w')
-    fh2 = open(os.path.join(os.getcwd(), 'tmp', 'stage_2', JOBS_SKILLS), 'w')
+    fh = open(os.path.join(os.getcwd(), 'etl', 'stage_2', SKILLS_MASTER), 'w')
+    fh2 = open(os.path.join(os.getcwd(), 'etl', 'stage_2', JOBS_SKILLS), 'w')
     skill_uuids = []
     fh.write('uuid\tskill_name\tdescription\n')
-    fh2.write('job_uuid\tonet_soc_code\n')
+    fh2.write('skill_uuid\tonet_soc_code\n')
     for line in content:
         line = line.strip().split('\t')
         uuid = get_md5(line[3])

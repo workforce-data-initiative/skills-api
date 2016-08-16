@@ -29,7 +29,8 @@ fi
 # Stage 1: Download Data Files from AWS S3 Buckets
 echo -ne "Stage 1 - Downlading Data Files From AWS S3 Buckets................."
 for path in ${S3_PATHS[@]}; do
-    aws s3 cp s3://$path $STAGE_1/.
+    echo ""
+    #aws s3 cp s3://$path $STAGE_1/.
 done
 echo "Done"
 

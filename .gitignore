@@ -8,3 +8,5 @@ tmp/
 config.*
 *.zip
 *.sql
+*.tsv
+*.csv
