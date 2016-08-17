@@ -12,6 +12,7 @@ TMP_DIR=`pwd`/etl
 STAGE_1=$TMP_DIR/stage_1
 STAGE_2=$TMP_DIR/stage_2
 STAGE_3=$TMP_DIR/stage_3
+STAGE_4=$TMP_DIR/stage_4
 
 S3_PATHS=(  "skills-public/machine_learning/table/job2skill_column_skill_index.tsv"
             "skills-public/machine_learning/table/job_titles_master_table.tsv"
@@ -30,7 +31,7 @@ fi
 echo -ne "Stage 1 - Downlading Data Files From AWS S3 Buckets................."
 for path in ${S3_PATHS[@]}; do
     echo ""
-    #aws s3 cp s3://$path $STAGE_1/.
+    aws s3 cp s3://$path $STAGE_1/.
 done
 echo "Done"
 
@@ -53,5 +54,5 @@ if [ ! -d $STAGE_3 ]; then
     mkdir -p $STAGE_3
 fi
 
-python $ETL_APP --stage-3 $STAGE_2
+python $ETL_APP --stage-3 $STAGE_2 $STAGE_3
 echo "Done"

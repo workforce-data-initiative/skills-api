@@ -203,7 +203,7 @@ def skills(filepath):
     fh.close()
     fh2.close()
 
-def stage_3_processing(filepath):
+def stage_3_processing(filepath, outfilepath):
     """ Perform further refinement on datasets.
     
     Args:
@@ -211,13 +211,85 @@ def stage_3_processing(filepath):
 
     """
     files = os.listdir(filepath)
+    all_skills = {}
+    all_jobs = {}
+    skill_count = {}
 
-    for file in files:
-        print file
+    # load all the datasets    
+    jobs_master = extract_data(os.path.join(filepath, JOBS_MASTER))
+    skills_master = extract_data(os.path.join(filepath, SKILLS_MASTER))
+    jobs_unusual_titles = extract_data(os.path.join(filepath, JOBS_UNUSUAL_TITLES))
+    jobs_skills = extract_data(os.path.join(filepath, JOBS_SKILLS))
+    jobs_titles = extract_data(os.path.join(filepath, JOBS_TITLES))
+    skills_importance = extract_data(os.path.join(filepath, SKILLS_IMPORTANCE))
+    jobs_skills_count = extract_data(os.path.join(filepath, JOBS_SKILLS_COUNT))
+
+    # load the job and skill uuids into an easily referenced map
+    for job in jobs_master:
+        job = job.strip().split('\t')
+        all_jobs[job[0]] = job[3]
+
+    for skill in skills_master:
+        skill = skill.strip().split('\t')
+        all_skills[skill[1]] = skill[0]
+
+    for count in jobs_skills_count:
+        count = count.strip().split('\t')
+        skill_count[count[1]] = count[3]
+
+    # replace the onet soc code with the job uuid and remove the skill name
+    for i in range(0, len(jobs_skills_count)):
+        current_line = jobs_skills_count[i].strip().split('\t')
+        current_line[0] = all_jobs[current_line[0]]
+        jobs_skills_count[i] = current_line
+
+    fh = open(os.path.join(outfilepath, JOBS_SKILLS_COUNT), 'w')
+    fh.write('job_uuid\tskill_uuid\tcount\n')
+    for i in range(0, len(jobs_skills_count)):
+        fh.write(jobs_skills_count[i][0] + '\t' + jobs_skills_count[i][1] + '\t' + jobs_skills_count[i][3] + '\t' + '\n')
+    fh.close()
+
+
+    # replace the onet soc code with the job uuid in the jobs skill table
+    for i in range(0, len(jobs_skills)):
+        current_line = jobs_skills[i].strip().split('\t')
+        current_line[1] = all_jobs[current_line[1]]
+        jobs_skills[i] = current_line    
+
+    # TODO: Write the new file here
+
+    # generate a md5 checksum for a unique job title and get the category uuid
+    for i in range(0, len(jobs_unusual_titles)):
+        current_line = jobs_unusual_titles[i].strip().split('\t')
+        current_line.append(get_md5(current_line[1]))
+        current_line.append(all_jobs[current_line[0]])
+        jobs_unusual_titles[i] = current_line
+
+    # TODO: Write the new file here
+
+    # add the job uuid to the skill importance table
+    for i in range(0, len(skills_importance)):
+        current_line = skills_importance[i].strip().split('\t')
+        current_line.append(all_jobs[current_line[0]])
+        skills_importance[i] = current_line    
+
+    #TODO: Write the new file here
+
+    # add skill count to skills master
+    for i in range(0, len(skills_master)):
+        current_line = skills_master[i].strip().split('\t')
+        try:
+            current_line.append(skill_count[current_line[0]])
+        except:
+            current_line.append(0)
+
+        skills_master[i] = current_line    
+
+    # TODO: Write the new file here
 
 if __name__ == '__main__':
     if len(sys.argv) > 2:
         if sys.argv[1] == '--stage-2' and os.path.isfile(sys.argv[2]):
             process_file(sys.argv[2])
-        elif sys.argv[1] == '--stage-3' and os.path.isdir(sys.argv[2]):
-            stage_3_processing(sys.argv[2])
+        elif sys.argv[1] == '--stage-3' and os.path.isdir(sys.argv[2]) and os.path.isdir(sys.argv[3]):
+            stage_3_processing(sys.argv[2], sys.argv[3])
