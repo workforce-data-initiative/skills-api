@@ -451,6 +451,10 @@
           "type" : "string",
           "description" : "Job description"
         },
+        "relevance_score" : {
+          "type" : "string",
+          "description" : "Relevance score for job title."
+        },
         "parent_uuid" : {
           "type" : "string",
           "description" : "Universal Unique Identifier for the canonical job title"
