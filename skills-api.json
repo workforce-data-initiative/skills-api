@@ -603,7 +603,7 @@
         },
         "importance" : {
           "type" : "float",
-          "description" : "O*NET importance score"
+          "description" : "ONET importance score"
         }
       }
     },
