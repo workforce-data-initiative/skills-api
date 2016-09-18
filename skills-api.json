@@ -602,8 +602,12 @@
           "description" : "Normalized skill name"
         },
         "importance" : {
-          "type" : "float",
-          "description" : "ONET importance score"
+          "type" : "number",
+          "description" : "O*NET importance score"
+        },
+        "level" : {
+          "type" : "number",
+          "description" : "O*NET level score"
         }
       }
     },
