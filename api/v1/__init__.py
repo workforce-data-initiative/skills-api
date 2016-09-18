@@ -18,6 +18,7 @@ from . models.jobs_master import JobMaster
 from . models.jobs_alternate_titles import JobAlternateTitle
 from . models.jobs_unusual_titles import JobUnusualTitle
 from . models.jobs_skills import JobSkill
+from . models.skills_importance import SkillImportance
 
 from . endpoints import *
 

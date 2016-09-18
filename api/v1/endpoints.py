@@ -23,6 +23,7 @@ from . models.skills_master import SkillMaster
 from . models.jobs_alternate_titles import JobAlternateTitle
 from . models.jobs_unusual_titles import JobUnusualTitle
 from . models.jobs_skills import JobSkill
+from . models.skills_importance import SkillImportance
 from collections import OrderedDict
 
 # Pagination Control Parameters
@@ -396,7 +397,7 @@ class JobTitleNormalizeEndpoint(Resource):
                 suggestion['relevance_score'] = fake_relevance_score() 
                 suggestion['parent_uuid'] = alt_titles[chosen_title].job_uuid
                 all_suggestions.append(suggestion)
-                
+
             return create_response(sorted(all_suggestions, key=lambda k: k['relevance_score'], reverse=True), 200)
         else:
             return create_error('No normalized job titles found', 404)    
@@ -516,7 +517,8 @@ class AssociatedSkillsForJobEndpoint(Resource):
 
         """
         if id is not None:
-            results = JobSkill.query.filter_by(job_uuid = id).all()
+            #results = JobSkill.query.filter_by(job_uuid = id).all()
+            results = SkillImportance.query.filter_by(job_uuid = id).all()
             job = JobMaster.query.filter_by(uuid = id).first()
             if not results:
                 parent_uuid = None
@@ -529,7 +531,8 @@ class AssociatedSkillsForJobEndpoint(Resource):
                         parent_uuid = job.job_uuid
                 
                 if parent_uuid is not None:
-                    results = JobSkill.query.filter_by(job_uuid = parent_uuid).all()
+                    #results = JobSkill.query.filter_by(job_uuid = parent_uuid).all()
+                    results = SkillImportance.query.filter_by(job_uuid = parent_uuid).all()
                     
             if len(results) > 0:
                 all_skills = OrderedDict()
@@ -544,7 +547,12 @@ class AssociatedSkillsForJobEndpoint(Resource):
                     skill['skill_name'] = skill_desc.skill_name
                     skill['description'] = skill_desc.description
                     skill['normalized_skill_name'] = skill_desc.nlp_a
+                    skill['importance'] = result.importance
+                    skill['level'] = result.level
                     all_skills['skills'].append(skill)
+
+                all_skills['skills'] = sorted(all_skills['skills'], key=lambda k: k['importance'], reverse=True)
+
                 return create_response(all_skills, 200)
             else:
                 return create_error('No associated skills found for job ' + id, 404)
@@ -562,7 +570,8 @@ class AssociatedJobsForSkillEndpoint(Resource):
 
         """
         if id is not None:
-            results = JobSkill.query.filter_by(skill_uuid = id).all()
+            #results = JobSkill.query.filter_by(skill_uuid = id).all()
+            results = SkillImportance.query.filter_by(skill_uuid = id).all()
             if len(results) > 0:
                 all_jobs = OrderedDict()
                 skill = SkillMaster.query.filter_by(uuid = id).first()
@@ -576,7 +585,11 @@ class AssociatedJobsForSkillEndpoint(Resource):
                     job['job_uuid'] = result.job_uuid
                     job['job_title'] = job_desc.title
                     job['normalized_job_title'] = job_desc.nlp_a
+                    job['importance'] = result.importance
+                    job['level'] = result.level
                     all_jobs['jobs'].append(job)
+
+                all_jobs['jobs'] = sorted(all_jobs['jobs'], key=lambda k: k['importance'], reverse=True)
                 return create_response(all_jobs, 200)
             else:
                 return create_error('No associated jobs found for skill ' + id, 404)
@@ -685,7 +698,8 @@ class SkillNameAndFrequencyEndpoint(Resource):
                 else:
                     return create_error('Cannot find skills associated with id ' + id, 404)
                 
-                results = JobSkill.query.filter_by(job_uuid = search_uuid).all()
+                #results = JobSkill.query.filter_by(job_uuid = search_uuid).all()
+                results = SkillImportance.query.filter_by(job_uuid = search_uuid).all()
                 if len(results) == 0:
                     return create_error('Cannot find skills associated with id ' + id, 404)
                 else:
