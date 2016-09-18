@@ -600,6 +600,10 @@
         "normalized_skill_name" : {
           "type" : "string",
           "description" : "Normalized skill name"
+        },
+        "importance" : {
+          "type" : "float",
+          "description" : "O*NET importance score"
         }
       }
     },
