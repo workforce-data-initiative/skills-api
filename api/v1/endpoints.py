@@ -14,6 +14,7 @@ Note:
 
 import math
 import json
+import random
 from flask import abort, request
 from flask_restful import Resource
 from  common.utils import create_response, create_error
@@ -31,6 +32,11 @@ DEFAULT_PAGINATION_LIMIT = 20
 # ------------------------------------------------------------------------
 # Helper Methods 
 # ------------------------------------------------------------------------
+
+def fake_relevance_score():
+    """Return a fake relevance score between 0 and 1."""
+    return round(random.uniform(0,1),3)
+
 def compute_offset(page, items_per_page):
     """Calculate the offset value to use for pagination.
 
@@ -362,23 +368,36 @@ class JobTitleNormalizeEndpoint(Resource):
             else:
                 return create_error('Invalid parameter specified for job title normalization', 400)
 
+            if 'limit' in args.keys():
+                try:
+                    suggestion_limit = int(args['limit'])
+                except:
+                    suggestion_limit = 1
+            else:
+                suggestion_limit = 1
+
             search_string = search_string.replace('"','').strip()
             all_suggestions = []
             
-            results = JobUnusualTitle.query.filter(JobUnusualTitle.title.contains(search_string.lower())).all()
+            result = JobUnusualTitle.query.filter(JobUnusualTitle.title.contains(search_string.lower())).first()
 
-            if len(results) == 0:
+            if result is None:
                 return create_error('No normalized job titles found', 404)                
 
-            for result in results:
-                suggestion = OrderedDict()
-                suggestion['uuid'] = result.uuid
-                suggestion['title'] = result.title
-                suggestion['description'] = result.description
-                suggestion['parent_uuid'] = result.job_uuid
-                all_suggestions.append(suggestion)
+            alt_titles = JobAlternateTitle.query.filter_by(job_uuid = result.job_uuid).all()
+            if suggestion_limit > len(alt_titles):
+                suggestion_limit = len(alt_titles)
 
-            return create_response(all_suggestions, 200)
+            for i in range(0, suggestion_limit):
+                suggestion = OrderedDict()
+                chosen_title = random.randint(0, len(alt_titles) - 1)
+                suggestion['uuid'] = alt_titles[chosen_title].uuid
+                suggestion['title'] = alt_titles[chosen_title].title
+                suggestion['relevance_score'] = fake_relevance_score() 
+                suggestion['parent_uuid'] = alt_titles[chosen_title].job_uuid
+                all_suggestions.append(suggestion)
+                
+            return create_response(sorted(all_suggestions, key=lambda k: k['relevance_score'], reverse=True), 200)
         else:
             return create_error('No normalized job titles found', 404)    
             
