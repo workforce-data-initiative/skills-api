@@ -476,6 +476,14 @@
         "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized job title"
+        },
+        "importance" : {
+          "type" : "number",
+          "description" : "O*NET importance score indicating how important skill is to job."
+        },
+        "level" : {
+          "type" : "number",
+          "description" : "O*NET level score indicating the skill level required for the job."
         }
       }
     },
