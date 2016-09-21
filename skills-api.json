@@ -9,7 +9,7 @@
       "url" : "http://www.dataatwork.org"
     }
   },
-  "host" : "http://api.dataatwork.org",
+  "host" : "api.dataatwork.org",
   "schemes" : [ "http" ],
   "basePath" : "/v1",
   "produces" : [ "application/json" ],
