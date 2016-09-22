@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""
-api.version.v1.models.jobs_alternate_titles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
+"""Alternate Titles ORM"""
 
 from app.app import db
 

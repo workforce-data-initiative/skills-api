@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""
-api.version.v1_0.models.jobs_unusual_titles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
+"""Jobs Unusual Titles ORM"""
 
 from app.app import db
 
@@ -23,3 +20,6 @@ class JobUnusualTitle(db.Model):
 
     def __repr__(self):
         return '<uuid {}>'.format(self.uuid)
+
+    def find_all(self):
+        return self.query.order_by(self.title.asc()).all()

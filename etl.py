@@ -12,11 +12,12 @@ import sys
 import hashlib
 import uuid
 
-from api.v1_0.models.skills_master import SkillMaster
-from api.v1_0.models.jobs_master import JobMaster
-from api.v1_0.models.jobs_alternate_titles import JobAlternateTitle
-from api.v1_0.models.jobs_unusual_titles import JobUnusualTitle
-from api.v1_0.models.jobs_skills import JobSkill
+from api.v1.models.skills_master import SkillMaster
+from api.v1.models.jobs_master import JobMaster
+from api.v1.models.jobs_alternate_titles import JobAlternateTitle
+from api.v1.models.jobs_unusual_titles import JobUnusualTitle
+from api.v1.models.jobs_skills import JobSkill
+from api.v1.models.skills_importance import SkillImportance
 
 from app.app import app, db
 from flask_script import Manager
@@ -167,6 +168,50 @@ def load_jobs_alternate_titles():
 def load_skills_related():
     """ Loads the skills_related table """
     pass
+
+@manager.command
+def load_skills_importance():
+    """Load the skills importance table"""
+    with open(os.path.join('etl', 'etl', 'stage_1', 'ksas_importances.csv'), 'r') as f:
+        skills = f.readlines()
+
+        skills = skills[1:]
+
+        found_importance = False
+        found_level = False
+        level = ''
+        importance = ''
+        count = 1
+
+        for skill in skills:
+            skill_array = skill.split(',')
+            onet_soc_code = skill_array[1]
+            skill_name = skill_array[3].lower()
+            scale = skill_array[4]
+            value = skill_array[5]
+            
+            if not found_importance:
+                skill_uuid = SkillMaster.query.filter_by(skill_name = skill_name).first().uuid
+                job_uuid = JobMaster.query.filter_by(onet_soc_code = onet_soc_code).first().uuid
+
+                if scale == 'IM':
+                    importance = value
+                    found_importance = True
+            elif not found_level and found_importance:
+                if scale == 'LV':
+                    level = value
+                    found_level = True
+                    print 'adding row ' + str(count) + ' of ' + str(len(skills)/2) 
+                    skills_importance = SkillImportance(job_uuid, skill_uuid, level, importance)
+                    db.session.add(skills_importance)
+                    db.session.commit()
+
+                    # reset importance and level
+                    found_level = False
+                    found_importance = False
+                    level = ''
+                    importance = ''
+                    count += 1
 
 @manager.command
 def load_jobs_skills():

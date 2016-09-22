@@ -6,6 +6,7 @@ zappa_settings.json
 create-login-profile.json
 tmp/
 config.*
-*.txt
 *.zip
 *.sql
+*.tsv
+*.csv

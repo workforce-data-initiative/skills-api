@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""
-api.version.v1_0.models.jobs_skills
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
+"""Jobs Skills ORM"""
 
 from app.app import db
 

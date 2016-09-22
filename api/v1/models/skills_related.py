@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""
-api.version.v1_0.models.skill_related
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
+"""Skills Related ORM"""
 
 from app.app import db
 from sqlalchemy.dialects.postgresql import JSONB

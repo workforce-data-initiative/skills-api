@@ -9,7 +9,7 @@
       "url" : "http://www.dataatwork.org"
     }
   },
-  "host" : "52.12.156.193",
+  "host" : "api.dataatwork.org",
   "schemes" : [ "http" ],
   "basePath" : "/v1",
   "produces" : [ "application/json" ],
@@ -176,6 +176,12 @@
           "description" : "Find the canonical job title(s) for jobs matching the given text fragment",
           "required" : true,
           "type" : "string"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Maximumn number of job title synonyms to return. Default 1.",
+          "required" : false,
+          "type" : "integer"
         } ],
         "responses" : {
           "200" : {
@@ -447,9 +453,9 @@
           "type" : "string",
           "description" : "Job title for the synonymous job title"
         },
-        "description" : {
+        "relevance_score" : {
           "type" : "string",
-          "description" : "Job description"
+          "description" : "Relevance score for job title."
         },
         "parent_uuid" : {
           "type" : "string",
@@ -470,6 +476,14 @@
         "normalized_job_title" : {
           "type" : "string",
           "description" : "Normalized job title"
+        },
+        "importance" : {
+          "type" : "number",
+          "description" : "O*NET importance score indicating how important skill is to job."
+        },
+        "level" : {
+          "type" : "number",
+          "description" : "O*NET level score indicating the skill level required for the job."
         }
       }
     },
@@ -594,6 +608,14 @@
         "normalized_skill_name" : {
           "type" : "string",
           "description" : "Normalized skill name"
+        },
+        "importance" : {
+          "type" : "number",
+          "description" : "O*NET importance score"
+        },
+        "level" : {
+          "type" : "number",
+          "description" : "O*NET level score"
         }
       }
     },
