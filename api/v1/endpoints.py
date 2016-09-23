@@ -357,111 +357,50 @@ class JobTitleNormalizeEndpoint(Resource):
 
     def get(self):
         """GET operation for the endpoint class.
-
         Returns: 
             A normalized version of a specified job title.
-
         """
         args = request.args
-
+        
         if args is not None:
-            if 'limit' in args.keys():
-                try:
-                    limit = int(args['limit'])
-                    if limit < 0:
-                        return create_error('Limit must be a positive integer.', 400)
-                    if limit > 10:
-                        return create_error('Limit has a maximum of 10.', 400)
-                except:
-                    return create_error('Limit must be an integer', 400)
-            else:
-                limit = 1
-
             if 'job_title' in args.keys():
                 search_string = str(args['job_title'])
             else:
                 return create_error('Invalid parameter specified for job title normalization', 400)
 
-            request_body = {
-                "size": limit*10, # give us a buffer to remove duplicates
-                "fields": ['title'],
-                "query" : {
-                    "bool": {
-                        "should": [
-                            { "multi_match": {
-                                "query": search_string,
-                                "fields": ["title^5", "title_suggest"]
-                            } },
-                            { "match_phrase": {
-                                "jobdesc": {
-                                    "query": search_string,
-                                    "slop": 1
-                                }
-                            } }
-                        ]
-                    }
-                }
-            }
+            if 'limit' in args.keys():
+                try:
+                    suggestion_limit = int(args['limit'])
+                except:
+                    suggestion_limit = 1
+            else:
+                suggestion_limit = 1
 
-            response = es.search(index='normalizer', body=request_body)
-            results = response['hits']['hits']
-            if len(results) == 0:
-                return create_error('No normalized job titles found', 404)
-
-            def normalize(value):
-                minimum = 0.0
-                maximum = 10.0
-                if value < minimum:
-                    return 0.0
-                elif value > maximum:
-                    return 1.0
-                else:
-                    return (value - minimum) / (maximum - minimum)
-
-            # take unique titles until reaching the limit
-            distinct_titles = set()
-            titles = []
-            num_distinct_titles = 0
-            for result in results:
-                if num_distinct_titles >= limit:
-                    break
-                if 'fields' not in result or 'title' not in result['fields']:
-                    continue
-                title = result['fields']['title'][0]
-                if title in distinct_titles:
-                    continue
-                distinct_titles.add(title)
-                titles.append({
-                    'title': title,
-                    'score': normalize(result['_score']),
-                    'uuid': str(hashlib.md5(title.lower()).hexdigest())
-                })
-                num_distinct_titles += 1
-
+            search_string = search_string.replace('"','').strip()
             all_suggestions = []
+            
+            result = JobUnusualTitle.query.filter(JobUnusualTitle.title.contains(search_string.lower())).first()
 
-            category_fetch_stmt = JobMaster.__table__.select(
-                JobMaster.uuid.in_([title['uuid'] for title in titles])
-            )
+            if result is None:
+                return create_error('No normalized job titles found', 404)                
 
-            category_fetch_results = db.engine.execute(category_fetch_stmt)
-            category_lookup = { row[0]: row[1] for row in category_fetch_results }
+            alt_titles = JobAlternateTitle.query.filter_by(job_uuid = result.job_uuid).all()
+            if suggestion_limit > len(alt_titles):
+                suggestion_limit = len(alt_titles)
 
-            for row in titles:
+            for i in range(0, suggestion_limit):
                 suggestion = OrderedDict()
-                suggestion['uuid'] = row['uuid']
-                suggestion['title'] = row['title']
-                suggestion['relevance_score'] = row['score']
-                if row['uuid'] in category_lookup:
-                    category = category_lookup[row['uuid']]
-                    suggestion['parent_uuid'] = str(hashlib.md5(category.lower()).hexdigest())
-                else:
-                    suggestion['parent_uuid'] = ''
+                chosen_title = random.randint(0, len(alt_titles) - 1)
+                suggestion['uuid'] = alt_titles[chosen_title].uuid
+                suggestion['title'] = alt_titles[chosen_title].title
+                suggestion['relevance_score'] = fake_relevance_score() 
+                suggestion['parent_uuid'] = alt_titles[chosen_title].job_uuid
                 all_suggestions.append(suggestion)
 
             return create_response(sorted(all_suggestions, key=lambda k: k['relevance_score'], reverse=True), 200)
         else:
-            return create_error('No normalized job titles found', 404)    
+            return create_error('No normalized job titles found', 404) 
+
 
 class JobTitleFromONetCodeEndpoint(Resource):
     """Job Title From O*NET SOC Code Endpoint Class"""
