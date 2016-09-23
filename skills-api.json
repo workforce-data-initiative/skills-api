@@ -179,7 +179,7 @@
         }, {
           "name" : "limit",
           "in" : "query",
-          "description" : "Maximumn number of job title synonyms to return. Default 1.",
+          "description" : "Maximumn number of job title synonyms to return. Default is 1 and cannot exceed 10.",
           "required" : false,
           "type" : "integer"
         } ],
