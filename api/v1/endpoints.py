@@ -384,6 +384,7 @@ class JobTitleNormalizeEndpoint(Resource):
 
             request_body = {
                 "size": limit*10, # give us a buffer to remove duplicates
+                "fields": ['title'],
                 "query" : {
                     "bool": {
                         "should": [
@@ -424,6 +425,8 @@ class JobTitleNormalizeEndpoint(Resource):
             for result in results:
                 if num_distinct_titles >= limit:
                     break
+                if 'fields' not in result or 'title' not in result['fields']:
+                    continue
                 title = result['fields']['title'][0]
                 if title in distinct_titles:
                     continue
@@ -431,7 +434,7 @@ class JobTitleNormalizeEndpoint(Resource):
                 titles.append({
                     'title': title,
                     'score': normalize(result['_score']),
-                    'uuid': str(hashlib.md5(title).hexdigest())
+                    'uuid': str(hashlib.md5(title.lower()).hexdigest())
                 })
                 num_distinct_titles += 1
 
@@ -451,7 +454,7 @@ class JobTitleNormalizeEndpoint(Resource):
                 suggestion['relevance_score'] = row['score']
                 if row['uuid'] in category_lookup:
                     category = category_lookup[row['uuid']]
-                    suggestion['parent_uuid'] = str(hashlib.md5(category).hexdigest())
+                    suggestion['parent_uuid'] = str(hashlib.md5(category.lower()).hexdigest())
                 else:
                     suggestion['parent_uuid'] = ''
                 all_suggestions.append(suggestion)
