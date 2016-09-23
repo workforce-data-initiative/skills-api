@@ -1,0 +1,70 @@
+{
+   "hits":{
+      "hits":[
+         {
+            "_score":4.096966,
+            "_type":"titles",
+            "_id":"-12345",
+            "fields":{
+               "title":[
+                  "Sales Managers"
+               ]
+            },
+            "_index":"normalizer"
+         },
+         {
+            "_score":4.0939603,
+            "_type":"titles",
+            "_id":"23456",
+            "fields":{
+               "title":[
+                  "Sales Managers"
+               ]
+            },
+            "_index":"normalizer"
+         },
+         {
+            "_score":4.0939603,
+            "_type":"titles",
+            "_id":"-34567",
+            "fields":{
+               "title":[
+                  "Sales Managers"
+               ]
+            },
+            "_index":"normalizer"
+         },
+         {
+            "_score":4.0794497,
+            "_type":"titles",
+            "_id":"-45678",
+            "fields":{
+               "title":[
+                  "Sales Managers"
+               ]
+            },
+            "_index":"normalizer"
+         },
+         {
+            "_score":2.1334965,
+            "_type":"titles",
+            "_id":"56789",
+            "fields":{
+               "title":[
+                  "First-Line Supervisors/Managers of Non-Retail Sales Workers"
+               ]
+            },
+            "_index":"normalizer"
+         }
+      ],
+      "total":922009,
+      "max_score":4.096966
+   },
+   "_shards":{
+      "successful":1,
+      "failed":0,
+      "total":1
+   },
+   "took":443,
+   "timed_out":false
+}
