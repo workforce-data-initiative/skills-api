@@ -12,6 +12,7 @@ The following endpoints were automatically deployed via the Zappa framework to A
 
 ## Dependencies
 - Python 2.7.11
+- Postgres database
 
 ## Installation
 To run the API locally, please perform the following steps:
@@ -43,6 +44,16 @@ $ source venv/bin/activate
 7. Install dependencies from `requirements.txt`
 ```
 $ pip install -r requirements.txt
+```
+
+8. Make regular (development) config. Run bin/make_config.sh and fill in connection string to database.
+```
+$ bin/make_config.sh
+```
+
+9. Clone development config for test config. Copy the resultant config/config.py to config/test_config.py and modify the SQL connection string to match your test database (you can leave this the same as your development database, if you wish, but we recommend keeping separate ones.
+```
+$ cp config/config.py config/test_config.py
 ```
 
 ## Deployment to Amazon Web Services
