@@ -25,6 +25,8 @@ from . models.jobs_alternate_titles import JobAlternateTitle
 from . models.jobs_unusual_titles import JobUnusualTitle
 from . models.jobs_skills import JobSkill
 from . models.skills_importance import SkillImportance
+from . models.geographies import Geography
+from . models.jobs_importance import JobImportance
 from collections import OrderedDict
 
 # Pagination Control Parameters
@@ -477,6 +479,25 @@ class JobTitleFromONetCodeEndpoint(Resource):
 
         """
         if id is not None:
+            args = request.args
+
+            if args is not None:
+                geography = None
+                if 'fips' in args.keys():
+                    fips = args['fips']
+                    geography = Geography.query.filter_by(
+                        geography_type = 'CBSA',
+                        geography_name = fips
+                    ).first()
+                    if geography is None:
+                        return create_error('Core-Based Statistical Area FIPS code not found', 404)
+                    importance = JobImportance.query.filter_by(
+                        geography_id = geography.geography_id,
+                        job_uuid = id
+                    ).first()
+                    if importance is None:
+                        return create_error('Job not found in given Core-Based statistical area', 404)
+
             result = JobMaster.query.filter_by(onet_soc_code = id).first()
             if result is None:
                 result = JobMaster.query.filter_by(uuid = id).first()
