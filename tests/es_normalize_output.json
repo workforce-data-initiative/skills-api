@@ -6,7 +6,7 @@
             "_type":"titles",
             "_id":"-12345",
             "fields":{
-               "title":[
+               "canonicaltitle":[
                   "Sales Managers"
                ]
             },
@@ -17,7 +17,7 @@
             "_type":"titles",
             "_id":"23456",
             "fields":{
-               "title":[
+               "canonicaltitle":[
                   "Sales Managers"
                ]
             },
@@ -28,7 +28,7 @@
             "_type":"titles",
             "_id":"-34567",
             "fields":{
-               "title":[
+               "canonicaltitle":[
                   "Sales Managers"
                ]
             },
@@ -39,7 +39,7 @@
             "_type":"titles",
             "_id":"-45678",
             "fields":{
-               "title":[
+               "canonicaltitle":[
                   "Sales Managers"
                ]
             },
@@ -50,7 +50,7 @@
             "_type":"titles",
             "_id":"56789",
             "fields":{
-               "title":[
+               "canonicaltitle":[
                   "First-Line Supervisors/Managers of Non-Retail Sales Workers"
                ]
             },
