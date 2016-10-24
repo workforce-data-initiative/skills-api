@@ -7,6 +7,7 @@ OpenSkills API Extract-Transform-Load utility
 
 """
 
+import csv
 import os
 import sys
 import hashlib
@@ -18,6 +19,10 @@ from api.v1.models.jobs_alternate_titles import JobAlternateTitle
 from api.v1.models.jobs_unusual_titles import JobUnusualTitle
 from api.v1.models.jobs_skills import JobSkill
 from api.v1.models.skills_importance import SkillImportance
+from api.v1.models.quarters import Quarter
+from api.v1.models.geographies import Geography
+from api.v1.models.jobs_importance import JobImportance
+
 
 from app.app import app, db
 from flask_script import Manager
@@ -279,6 +284,55 @@ def load_jobs_unusual_titles():
                 print 'Could not find job for unusual title ' + title
 
 @manager.command
+def load_jobs_importances():
+    """ Loads the jobs_importances table """
+
+    # Hardcoding quarter for now
+    quarter = Quarter.query.filter_by(year = 2016, quarter = 4).first()
+    if not quarter:
+        quarter = Quarter(year=2016, quarter=4)
+        db.session.add(quarter)
+        db.session.commit()
+
+    quarter_id = quarter.quarter_id
+
+    with open(os.path.join('tmp', 'cbsa_jobs.csv'), 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if len(row) < 3:
+                print 'Skipping', row, 'with not enough data'
+                continue
+            else:
+                title, cbsa, importance = row
+
+            if cbsa == '' or title == '':
+                print 'Skipping', row, 'with invalid data'
+                continue
+
+            kwargs = {
+                'geography_name': cbsa,
+                'geography_type': 'CBSA'
+            }
+            geography = Geography.query.filter_by(**kwargs).first()
+            if not geography:
+                geography = Geography(**kwargs)
+                db.session.add(geography)
+                db.session.commit()
+
+            job_title_uuid = str(hashlib.md5(title).hexdigest())
+            job_importance = JobImportance(
+                job_uuid=job_title_uuid,
+                quarter_id=quarter_id,
+                geography_id=geography.geography_id,
+                importance=importance
+            )
+            db.session.add(job_importance)
+        print 'Committing db session'
+        db.session.commit()
+        print 'Load complete'
+
+
+@manager.command
 def load_all_tables():
     """ Load all tables in sequence """
     load_jobs_master()
@@ -287,6 +341,7 @@ def load_all_tables():
     load_jobs_unusual_titles()
     #load_skills_related()
     load_jobs_skills()
+    load_jobs_importances()
 
 if __name__ == '__main__':
     manager.run()
