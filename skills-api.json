@@ -56,6 +56,11 @@
           "description" : "The O*NET SOC Code or UUID of the job title to retrieve",
           "required" : true,
           "type" : "string"
+        }, {
+          "name" : "fips",
+          "in" : "query",
+          "description" : "The FIPS Code of a Core-Based Statistical Area. Only return the job if present in this area",
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
