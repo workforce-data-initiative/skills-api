@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 from flask_restful import Api
 from flask_cors import CORS, cross_origin
+from flask.ext.elasticsearch import FlaskElasticsearch
 
 # ----------------------------------------------------------------------------
 # Flask Application Configuration
@@ -30,6 +31,7 @@ api = Api(app, catch_all_404s=True)
 # ----------------------------------------------------------------------------
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+es = FlaskElasticsearch(app)
 
 from api.router import api_bp as api_router_blueprint
 from api.v1 import api_bp as api_1_blueprint

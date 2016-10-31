@@ -19,6 +19,9 @@ from . models.jobs_alternate_titles import JobAlternateTitle
 from . models.jobs_unusual_titles import JobUnusualTitle
 from . models.jobs_skills import JobSkill
 from . models.skills_importance import SkillImportance
+from . models.quarters import Quarter
+from . models.geographies import Geography
+from . models.jobs_importance import JobImportance
 
 from . endpoints import *
 
