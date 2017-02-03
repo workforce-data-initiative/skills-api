@@ -33,6 +33,9 @@ for path in ${S3_PATHS[@]}; do
     echo ""
     aws s3 cp s3://$path $STAGE_1/.
 done
+aws s3 cp s3://skills-public/pipeline/tables/ $STAGE_1/ --recursive --exclude "*" --include "output_geo_title_count_*"
+aws s3 cp s3://skills-public/pipeline/tables/ $STAGE_1/ --recursive --exclude "*" --include "output_title_count_*"
+
 echo "Done"
 
 

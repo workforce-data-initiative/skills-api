@@ -27,6 +27,8 @@ from . models.jobs_skills import JobSkill
 from . models.skills_importance import SkillImportance
 from . models.geographies import Geography
 from . models.jobs_importance import JobImportance
+from . models.geo_title_count import GeoTitleCount
+from . models.title_count import TitleCount
 from collections import OrderedDict
 
 # Pagination Control Parameters
@@ -824,5 +826,134 @@ class AllUnusualJobsEndpoint(Resource):
                 all_jobs.append(job_response)
         
             return create_response(all_jobs, 200)
+        else:
+            return create_error('No jobs were found', 404)
+
+
+class TitleCountsEndpoint(Resource):
+    """All Jobs Endpoint Class"""
+
+    def get(self):
+        """GET operation for the endpoint class.
+
+        Returns: 
+            A collection of jobs.
+
+        Notes:
+            The endpoint supports pagination.
+
+        """
+
+        args = request.args
+        limit, offset = get_limit_and_offset(args)
+
+        all_jobs = []
+        links = OrderedDict()
+        links['links'] = []
+
+
+        if args is not None:
+            geography = None
+            if 'fips' in args.keys():
+                fips = args['fips']
+                geography = Geography.query.filter_by(
+                    geography_type = 'CBSA',
+                    geography_name = fips
+                ).first()
+                if geography is None:
+                    return create_error('Core-Based Statistical Area FIPS code not found', 404)
+                base_stmt = '''select
+                    tc.job_title,
+                    tc.job_uuid,
+                    round(avg(gtc.count), 2)
+                    from
+                        title_counts tc
+                        join geo_title_counts gtc using (job_uuid, quarter_id)
+                    where geography_id = %(geography_id)s
+                    group by 1, 2 order by 3 desc
+                '''
+                job_results = db.engine.execute(
+                '''{}
+                limit %(limit)s
+                offset %(offset)s
+                '''.format(base_stmt),
+                    geography_id=geography.geography_id,
+                    limit=limit,
+                    offset=offset
+                )
+                rows = [row[0] for row in db.engine.execute(
+                    'select count(*) from ({}) q'.format(base_stmt),
+                    geography_id=geography.geography_id,
+                )][0]
+            else:
+                base_stmt = '''select
+                    tc.job_title,
+                    tc.job_uuid,
+                    round(avg(tc.count), 2)
+                    from title_counts tc
+                    group by 1, 2 order by 3 desc
+                '''
+                job_results = db.engine.execute(
+                '''{}
+                limit %(limit)s
+                offset %(offset)s
+                '''.format(base_stmt),
+                    limit=limit,
+                    offset=offset
+                )
+                rows = [row[0] for row in db.engine.execute(
+                    'select count(*) from ({}) q'.format(base_stmt)
+                )][0]
+
+
+        # compute pages
+        url_link = '/title_counts?offset={}&limit={}'
+        custom_headers = []
+        custom_headers.append('X-Total-Count = ' + str(rows))
+
+        total_pages = int(math.ceil(rows / limit))
+        current_page = compute_page(offset, limit)
+        first = OrderedDict()
+        prev = OrderedDict()
+        next = OrderedDict()
+        last = OrderedDict()
+        current = OrderedDict()
+
+        current['rel'] = 'self'
+        current['href'] = url_link.format(str(offset), str(limit))
+        links['links'].append(current)
+        
+        first['rel'] = 'first'
+        first['href'] = url_link.format(str(compute_offset(1, limit)), str(limit))
+        links['links'].append(first)
+        
+        if current_page > 1:
+            prev['rel'] = 'prev'
+            prev['href'] = url_link.format(str(compute_offset(current_page - 1, limit)), str(limit))
+            links['links'].append(prev)
+
+        if current_page < total_pages:
+            next['rel'] = 'next'
+            next['href'] = url_link.format(str(compute_offset(current_page + 1, limit)), str(limit))
+            links['links'].append(next)
+
+        last['rel'] = 'last'
+        last['href'] = url_link.format(str(compute_offset(total_pages, limit)), str(limit)) 
+        links['links'].append(last)
+
+        if job_results is not None:
+            for job in job_results:
+                title, job_uuid, count = job
+                job_response = OrderedDict()
+                job_response['uuid'] = job_uuid
+                job_response['title'] = title
+                job_response['count'] = float(count)
+                job_response['normalized_job_title'] = None
+                job_response['parent_uuid'] = None
+                all_jobs.append(job_response)
+            
+            all_jobs.append(links)
+        
+            return create_response(all_jobs, 200, custom_headers)
         else:
             return create_error('No jobs were found', 404)
