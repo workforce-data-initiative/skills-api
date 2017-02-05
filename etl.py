@@ -8,10 +8,10 @@ OpenSkills API Extract-Transform-Load utility
 """
 
 import csv
+import re
 import os
-import sys
 import hashlib
-import uuid
+import time
 
 from api.v1.models.skills_master import SkillMaster
 from api.v1.models.jobs_master import JobMaster
@@ -22,6 +22,8 @@ from api.v1.models.skills_importance import SkillImportance
 from api.v1.models.quarters import Quarter
 from api.v1.models.geographies import Geography
 from api.v1.models.jobs_importance import JobImportance
+from api.v1.models.geo_title_count import GeoTitleCount
+from api.v1.models.title_count import TitleCount
 
 
 from app.app import app, db
@@ -32,6 +34,7 @@ manager = Manager(app, with_default_commands=False)
 
 # Add the SQLAlchemy migration utility
 manager.add_command('db', MigrateCommand)
+
 
 @manager.command
 def load_skills_master():
@@ -332,6 +335,121 @@ def load_jobs_importances():
         print 'Load complete'
 
 
+def load_geo_quarter_title_counts(filename, year, quarter):
+    """ Loads the geo_title_counts table """
+
+    before_time = time.time()
+    # Hardcoding quarter for now
+    quarter_record = Quarter.query.filter_by(year=year, quarter=quarter).first()
+    if not quarter_record:
+        quarter_record = Quarter(year=year, quarter=quarter)
+        db.session.add(quarter_record)
+        db.session.commit()
+
+    quarter_id = quarter_record.quarter_id
+
+    with open(os.path.join('etl/stage_1', filename), 'r') as f:
+        reader = csv.reader(f)
+        records = []
+        for row in reader:
+            if len(row) < 3:
+                print 'Skipping', row, 'with not enough data'
+                continue
+            else:
+                cbsa, title, count = row
+
+            if cbsa == '' or title == '':
+                print 'Skipping', row, 'with invalid data'
+                continue
+
+            kwargs = {
+                'geography_name': cbsa,
+                'geography_type': 'CBSA'
+            }
+            geography = Geography.query.filter_by(**kwargs).first()
+            if not geography:
+                geography = Geography(**kwargs)
+                db.session.add(geography)
+                db.session.commit()
+
+            job_title_uuid = str(hashlib.md5(title).hexdigest())
+            records.append(GeoTitleCount(
+                job_uuid=job_title_uuid,
+                job_title=title,
+                quarter_id=quarter_id,
+                geography_id=geography.geography_id,
+                count=count
+            ))
+        print 'Saving objects'
+        db.session.bulk_save_objects(records)
+        db.session.commit()
+        after_time = time.time()
+        print 'Load complete', str(after_time - before_time), 'seconds'
+
+
+def load_quarter_title_counts(filename, year, quarter):
+    """ Loads the title_counts table """
+
+    # Hardcoding quarter for now
+    quarter_record = Quarter.query.filter_by(year=year, quarter=quarter).first()
+    if not quarter_record:
+        quarter_record = Quarter(year=year, quarter=quarter)
+        db.session.add(quarter_record)
+        db.session.commit()
+
+    quarter_id = quarter_record.quarter_id
+
+    with open(os.path.join('etl/stage_1', filename), 'r') as f:
+        reader = csv.reader(f)
+        records = []
+        for row in reader:
+            if len(row) < 2:
+                print 'Skipping', row, 'with not enough data'
+                continue
+            else:
+                title, count = row
+
+            if title == '':
+                print 'Skipping', row, 'with invalid data'
+                continue
+
+            job_title_uuid = str(hashlib.md5(title).hexdigest())
+            records.append(TitleCount(
+                job_uuid=job_title_uuid,
+                job_title=title,
+                quarter_id=quarter_id,
+                count=count
+            ))
+        print 'Saving objects'
+        db.session.bulk_save_objects(records)
+        db.session.commit()
+        print 'Load complete'
+
+
+@manager.command
+def load_all_geo_title_counts():
+    for filename in os.listdir('etl/stage_1/'):
+        print 'checking', filename
+        match = re.match(r"output_geo_title_count_(?P<year>\d{4})Q(?P<quarter>\d).csv", filename)
+        if match:
+            print 'loading', filename
+            year = match.group('year')
+            quarter = match.group('quarter')
+            load_geo_quarter_title_counts(filename, year, quarter)
+
+
+@manager.command
+def load_all_title_counts():
+    for filename in os.listdir('etl/stage_1/'):
+        print 'checking', filename
+        match = re.match(r"output_title_count_(?P<year>\d{4})Q(?P<quarter>\d).csv", filename)
+        if match:
+            print 'loading', filename
+            year = match.group('year')
+            quarter = match.group('quarter')
+            load_quarter_title_counts(filename, year, quarter)
+
+
 @manager.command
 def load_all_tables():
     """ Load all tables in sequence """
@@ -342,6 +460,8 @@ def load_all_tables():
     #load_skills_related()
     load_jobs_skills()
     load_jobs_importances()
+    load_all_geo_title_counts()
+    load_all_title_counts()
 
 if __name__ == '__main__':
     manager.run()

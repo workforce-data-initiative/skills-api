@@ -41,3 +41,4 @@ api.add_resource(AssociatedSkillsForJobEndpoint, '/jobs/<string:id>/related_skil
 api.add_resource(AssociatedJobsForSkillEndpoint, '/skills/<string:id>/related_jobs')
 api.add_resource(AssociatedJobsForJobEndpoint, '/jobs/<string:id>/related_jobs')
 api.add_resource(AssociatedSkillForSkillEndpoint, '/skills/<string:id>/related_skills')
+api.add_resource(TitleCountsEndpoint, '/title_counts')
