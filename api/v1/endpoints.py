@@ -390,7 +390,7 @@ class JobTitleNormalizeEndpoint(Resource):
 
             request_body = {
                 "size": limit*10, # give us a buffer to remove duplicates
-                "fields": [indexed_field],
+                "_source": [indexed_field],
                 "query" : {
                     "bool": {
                         "should": [
@@ -406,8 +406,9 @@ class JobTitleNormalizeEndpoint(Resource):
                 }
             }
 
-            response = es.search(index='job_normalize', body=request_body)
+            response = es.search(index='normalize', body=request_body)
             results = response['hits']['hits']
+
             if len(results) == 0:
                 return create_error('No normalized job titles found', 404)
 
@@ -428,9 +429,9 @@ class JobTitleNormalizeEndpoint(Resource):
             for result in results:
                 if num_distinct_titles >= limit:
                     break
-                if 'fields' not in result or indexed_field not in result['fields']:
+                if '_source' not in result or indexed_field not in result['_source']:
                     continue
-                title = result['fields'][indexed_field][0]
+                title = result['_source'][indexed_field]
                 if title in distinct_titles:
                     continue
                 distinct_titles.add(title)
