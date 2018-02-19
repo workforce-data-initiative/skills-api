@@ -75,7 +75,7 @@ def create_response(data, status, custom_headers=None):
     if custom_headers is not None:
         for custom_header in custom_headers:
             header = custom_header.strip().split('=')
-            response.headers[header[0]] = header[1]
+            response.headers[header[0].strip()] = header[1].strip()
 
     return response
 
