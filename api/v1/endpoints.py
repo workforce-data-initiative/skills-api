@@ -241,6 +241,7 @@ class AllSkillsEndpoint(Resource):
                 skill_response = OrderedDict()
                 skill_response['uuid'] = skill.uuid
                 skill_response['name'] = skill.skill_name
+                skill_response['type'] = skill.ksa_type
                 skill_response['description'] = skill.description
                 skill_response['onet_element_id'] = skill.onet_element_id
                 skill_response['normalized_skill_name'] = skill.nlp_a
@@ -628,6 +629,7 @@ class AssociatedSkillsForJobEndpoint(Resource):
                     skill_desc = SkillMaster.query.filter_by(uuid = result.skill_uuid).first()
                     skill['skill_uuid'] = result.skill_uuid
                     skill['skill_name'] = skill_desc.skill_name
+                    skill['skill_type'] = skill_desc.ksa_type
                     skill['description'] = skill_desc.description
                     skill['normalized_skill_name'] = skill_desc.nlp_a
                     skill['importance'] = result.importance
@@ -753,6 +755,7 @@ class AssociatedSkillForSkillEndpoint(Resource):
                         output = OrderedDict()
                         output['uuid'] = skill.uuid
                         output['skill_name'] = skill.skill_name
+                        output['skill_type'] = skill.ksa_type
                         output['normalized_skill_name'] = skill.nlp_a
                         all_skills['skills'].append(output)
                     return create_response(all_skills, 200)

@@ -9,13 +9,15 @@ class SkillMaster(db.Model):
 
     uuid = db.Column(db.String, primary_key=True)
     skill_name = db.Column(db.String)
+    ksa_type = db.Column(db.String)
     onet_element_id = db.Column(db.String)
     description = db.Column(db.String)
     nlp_a = db.Column(db.String)
 
-    def __init__(self, uuid, skill_name, onet_element_id, description, nlp_a):
+    def __init__(self, uuid, skill_name, ksa_type, onet_element_id, description, nlp_a):
         self.uuid = uuid
         self.skill_name = skill_name
+        self.ksa_type = ksa_type
         self.onet_element_id = onet_element_id
         self.description = description
         self.nlp_a = nlp_a
